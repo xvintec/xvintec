@@ -1,0 +1,19 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "\n🪄 Running lint-staged 🪄\n"
+npx lint-staged
+echo "\n🐇 Check formatting... 🐇\n"
+npm run check-format || (
+    echo "\n⛔️ Prettier Check Failed ⛔️"
+    echo "\n✨ Formatting with Prettier... ✨\n"
+    npx prettier --write . | grep -v "unchanged" && (
+        echo "\n📝 Code formatted with Prettier, staging newly formatted changes... 📝\n"
+        git add .
+    ) || (
+        echo "\n❌ Formatting failed ❌\n Please check the code, add the changes, and try committing again.👀 \n"
+        false
+    )
+)
+
+echo "✅ Commit Hook Passed! Committing changes now. 💪\n"
