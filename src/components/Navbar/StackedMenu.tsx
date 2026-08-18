@@ -34,7 +34,7 @@ const StackedMenu = ({
       >
         <Link
           href={"/services"}
-          className={`flex items-center gap-2 font-normal ${isDark == true ? `${scrolled || isOpen ? 'text-h1-black"' : "text-white"}` : "text-h1-black"} cursor-pointer transition-colors lg:hover:text-[#414141]`}
+          className={`flex items-center gap-2 font-normal ${isDark == true ? `${scrolled || isOpen ? "text-h1-black" : "text-white"}` : "text-h1-black"} cursor-pointer transition-colors lg:hover:text-[#414141]`}
         >
           Services
           {isDark == true ? (

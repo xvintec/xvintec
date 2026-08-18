@@ -29,7 +29,7 @@ const Menu = (props: Props) => {
       {props.links.map((link, index) => (
         <Link
           key={index}
-          className={`${props.isDark == true ? `${props.scrolled || props.isOpen ? 'text-h1-black"' : "text-white"}` : "text-h1-black"} transition-colors lg:hover:text-blue-600 ${props.linkClassNames} border-[#CDD9E0] border-b-[1px] md:border-0 ${pathname == link.link ? " font-semibold" : "font-normal"}`}
+          className={`${props.isDark == true ? `${props.scrolled || props.isOpen ? "text-h1-black" : "text-white"}` : "text-h1-black"} transition-colors lg:hover:text-blue-600 ${props.linkClassNames} border-[#CDD9E0] border-b-[1px] md:border-0 ${pathname == link.link ? " font-semibold" : "font-normal"}`}
           href={link.link}
           onClick={props.onLinkClick}
         >

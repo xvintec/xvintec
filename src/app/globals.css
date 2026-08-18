@@ -22,6 +22,14 @@
     --secondary: #0daae9;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
+    --hero-gradient: linear-gradient(
+      135deg,
+      #060f26 0%,
+      #0a1b3d 45%,
+      #0d2e8c 80%,
+      #0325e1 100%
+    );
+
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 

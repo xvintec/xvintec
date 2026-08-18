@@ -20,9 +20,10 @@ export interface CompanyLogoType {
 
 export interface ButtonProps {
   children: ReactNode;
-  bgColor?: "btn-primary" | "btn-secondary";
+  bgColor?: "btn-primary" | "btn-secondary" | "btn-outline-light";
   className?: string;
   onClick?: () => void;
+  showArrow?: boolean;
 }
 
 export interface StackedMenuProps {

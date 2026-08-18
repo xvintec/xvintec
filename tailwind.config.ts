@@ -15,6 +15,7 @@ const customPlugin: PluginCreator = ({ addUtilities }) => {
     ".btn-primary": {
       background: "var(--primary-gradient)", // Equivalent to bg-blue-500
       color: "#ffffff", // Equivalent to text-white
+      boxShadow: "0 10px 24px -8px rgba(3, 37, 225, 0.5)",
       "&:hover": {
         background: "#0325E1", // Equivalent to hover:bg-blue-600
       },
@@ -31,6 +32,18 @@ const customPlugin: PluginCreator = ({ addUtilities }) => {
       },
       "&:active": {
         background: "#CFCFCF",
+      },
+    },
+    ".btn-outline-light": {
+      backgroundColor: "transparent",
+      color: "#ffffff",
+      border: "1px solid rgba(255, 255, 255, 0.35)",
+      "&:hover": {
+        background: "rgba(255, 255, 255, 0.12)",
+        borderColor: "rgba(255, 255, 255, 0.6)",
+      },
+      "&:active": {
+        background: "rgba(255, 255, 255, 0.2)",
       },
     },
   };
@@ -101,6 +114,11 @@ const config = {
         },
         grey: {
           light: "#eeedf4",
+        },
+        navy: {
+          DEFAULT: "#0A1B3D",
+          light: "#12275C",
+          dark: "#060F26",
         },
       },
       borderRadius: {

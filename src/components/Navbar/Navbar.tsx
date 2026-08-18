@@ -19,6 +19,8 @@ type Props = {
   NavbarData: NavbarType;
 };
 
+const darkHeaderRoutes = ["/services", "/home-v2"];
+
 const Navbar: FC<Props> = ({ NavbarData }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -37,7 +39,7 @@ const Navbar: FC<Props> = ({ NavbarData }) => {
   };
 
   useEffect(() => {
-    pathname != "/services" ? isDarkSet(false) : isDarkSet(true);
+    isDarkSet(darkHeaderRoutes.includes(pathname));
   }, [pathname]);
 
   useEffect(() => {
@@ -112,7 +114,7 @@ const Navbar: FC<Props> = ({ NavbarData }) => {
           </div>
           <div className="hidden items-center gap-2 md:flex">
             <Link href={"/employer"}>
-              <Button>Reach out to us</Button>
+              <Button showArrow={false}>Reach out to us</Button>
             </Link>
           </div>
 
@@ -209,7 +211,7 @@ const Navbar: FC<Props> = ({ NavbarData }) => {
                     href={"/employer"}
                     className="*:w-full"
                   >
-                    <Button>Reach out to us</Button>
+                    <Button showArrow={false}>Reach out to us</Button>
                   </Link>
                 ) : (
                   <Link
