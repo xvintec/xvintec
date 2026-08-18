@@ -27,8 +27,6 @@ export interface ButtonProps {
 }
 
 export interface StackedMenuProps {
-  isDark?: boolean;
-  scrolled?: boolean;
   isOpen?: boolean;
   onClick?: () => void;
 }

@@ -4,7 +4,6 @@ import { FC, useEffect, useState } from "react";
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
 
 import { ServicesData } from "@/data/ServicesData";
 import { NavbarType } from "@/types/NavbarTypes";
@@ -19,13 +18,9 @@ type Props = {
   NavbarData: NavbarType;
 };
 
-const darkHeaderRoutes = ["/services", "/home-v2"];
-
 const Navbar: FC<Props> = ({ NavbarData }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [isDark, isDarkSet] = useState(false);
-  const pathname = usePathname();
 
   const [isOpen, setIsOpen] = useState(false);
   const [isServiceMobileMenuOpen, setIsServiceMobileMenuOpen] = useState(false);
@@ -37,10 +32,6 @@ const Navbar: FC<Props> = ({ NavbarData }) => {
   const handleOpenHover = () => {
     setIsOpen(!isOpen);
   };
-
-  useEffect(() => {
-    isDarkSet(darkHeaderRoutes.includes(pathname));
-  }, [pathname]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -77,7 +68,7 @@ const Navbar: FC<Props> = ({ NavbarData }) => {
   return (
     <div className="relative z-40 animate-fade">
       <nav
-        className={`z-40 w-full fixed ${!isMenuOpen === true ? "" : "bg-white"} ${scrolled ? "bg-[#F5FBFF] py-4 ring-1 ring-gray-900/5" : `${isOpen ? "bg-[#F5FBFF] py-4" : "bg-transparent py-7"}`} transition-all duration-700 ease-in-out`}
+        className={`z-40 w-full fixed bg-white/95 backdrop-blur-md ring-1 ring-gray-900/5 ${scrolled ? "py-3" : "py-4"} transition-all duration-300 ease-in-out`}
         onClick={handleOpenClick}
       >
         <div className="fl-container flex flex-row items-center justify-between px-4 xl:px-0">
@@ -87,9 +78,7 @@ const Navbar: FC<Props> = ({ NavbarData }) => {
               className="mr-8"
               size={NavbarData.logo.size}
               image={{
-                url: isDark
-                  ? `${scrolled || isOpen || isMenuOpen ? NavbarData.logo.image.url : "/logos/xvintec-logo-white.svg"}`
-                  : NavbarData.logo.image.url,
+                url: NavbarData.logo.image.url,
                 alt: NavbarData.logo.image.alt,
               }}
               link={NavbarData.logo.link}
@@ -97,15 +86,8 @@ const Navbar: FC<Props> = ({ NavbarData }) => {
           </div>
 
           <div className="hidden items-center gap-2 md:flex">
-            <StackedMenu
-              isDark={isDark}
-              scrolled={scrolled}
-              isOpen={isOpen}
-              onClick={handleOpenHover}
-            />
+            <StackedMenu isOpen={isOpen} onClick={handleOpenHover} />
             <Menu
-              isDark={isDark}
-              scrolled={scrolled}
               isOpen={isOpen}
               className="hidden md:flex"
               links={NavbarData?.menuItems}
@@ -122,7 +104,7 @@ const Navbar: FC<Props> = ({ NavbarData }) => {
             <button onClick={handleMenuOpen}>
               {!isMenuOpen === true ? (
                 <Image
-                  src={`${isDark ? "/icons/menu-white.svg" : "/icons/menu.svg"}`}
+                  src="/icons/menu.svg"
                   width={40}
                   height={40}
                   alt="hamburger-icon"
