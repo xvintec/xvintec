@@ -76,7 +76,11 @@ const Testimonials2 = () => {
   const [sectionRef, isVisible] = useIntersectionAnimation();
 
   return (
-    <div className={`fl-container mb-20 md:mb-28`} ref={sectionRef}>
+    <div
+      id="client-stories"
+      className={`fl-container mb-20 md:mb-28`}
+      ref={sectionRef}
+    >
       <div className="text-center max-w-2xl m-auto mb-16">
         <H1Heading
           className={`${isVisible ? "animate-fade-up" : "opacity-0"}`}

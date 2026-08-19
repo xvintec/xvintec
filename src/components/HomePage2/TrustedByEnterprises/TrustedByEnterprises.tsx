@@ -52,7 +52,7 @@ const TrustedByEnterprises = () => {
         {trustedPartners.map((partner, index) => (
           <div
             key={index}
-            className={`max-w-md w-full bg-white py-8 px-6 rounded-lg text-center border border-transparent transition-all duration-300 hover:-translate-y-1 hover:border-secondary/40 hover:shadow-lg ${isVisible ? "animate-fade-up animate-delay-300" : "opacity-0"}`}
+            className={`max-w-md w-full bg-white py-8 px-6 rounded-2xl text-center border border-gray-100 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${isVisible ? "animate-fade-up animate-delay-300" : "opacity-0"}`}
           >
             <Image
               src={partner.image}

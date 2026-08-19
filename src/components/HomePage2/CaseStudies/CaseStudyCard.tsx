@@ -19,7 +19,7 @@ const CaseStudyCard = ({
 }: CaseStudyCardProps) => {
   return (
     <div
-      className={`max-w-md w-full bg-white py-8 px-6 rounded-lg border border-transparent transition-all duration-300 hover:-translate-y-1 hover:border-secondary/40 hover:shadow-lg ${className}`}
+      className={`w-full bg-white py-8 px-6 rounded-2xl border border-gray-100 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${className}`}
     >
       <H2Heading>{industry}</H2Heading>
       <div className="text-2xl font-semibold bg-gradient-to-r from-[#0DA7E9] to-[#0429E2] bg-clip-text text-transparent mt-2 mb-4">

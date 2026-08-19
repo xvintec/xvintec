@@ -1,11 +1,10 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 
 import H1Heading from "@/components/Common/Headings/H1Heading";
+import H2Heading from "@/components/Common/Headings/H2Heading";
 import useIntersectionAnimation from "@/components/Common/UseScrollAnimation/UseScrollAnimation";
-
-import IndustryCard from "./IndustryCard";
 
 const industriesData = [
   {
@@ -13,75 +12,66 @@ const industriesData = [
     percentage: 95,
     description:
       "Secure, scalable infrastructure for high-growth software and technology businesses.",
-    css: "animate-delay-300",
   },
   {
     title: "Accounting & Finance",
     percentage: 88,
     description:
       "Compliant systems protecting sensitive financial and client data.",
-    css: "animate-delay-500",
   },
   {
     title: "Healthcare & Wellness",
     percentage: 80,
     description:
       "Compliance-ready systems for clinics, therapy practices, and wellness providers.",
-    css: "animate-delay-700",
   },
   {
     title: "Legal & Professional Services",
     percentage: 74,
     description:
       "Secure, reliable IT for law firms, consultancies, and advisory practices.",
-    css: "animate-delay-1000",
   },
   {
     title: "Real Estate & Property",
     percentage: 72,
     description:
       "Always-on connectivity and data management for agents, brokers, and property managers.",
-    css: "animate-delay-300",
   },
   {
     title: "Retail & E-Commerce",
     percentage: 68,
     description:
       "PCI-compliant networks, POS integration, and uptime you can count on.",
-    css: "animate-delay-500",
   },
   {
     title: "Education & Non-Profit",
     percentage: 60,
     description:
       "Affordable, secure infrastructure for schools, training providers, and charities.",
-    css: "animate-delay-700",
   },
   {
     title: "Construction & Trades",
     percentage: 63,
     description:
       "Mobile-ready IT and project management integration for field-based teams.",
-    css: "animate-delay-1000",
   },
   {
     title: "Hospitality & Food Service",
     percentage: 56,
     description:
       "Reliable networks, POS systems, and guest Wi-Fi for restaurants and hotels.",
-    css: "animate-delay-300",
   },
   {
     title: "Managed Services & Agencies",
     percentage: 78,
     description:
       "White-label IT solutions and scalable infrastructure for MSPs and digital agencies.",
-    css: "animate-delay-500",
   },
 ];
 
 const IndustriesServed = () => {
   const [sectionRef, isVisible] = useIntersectionAnimation();
+  const [active, setActive] = useState(industriesData[0]);
 
   return (
     <div className="fl-container mb-20 md:mb-28" ref={sectionRef}>
@@ -98,16 +88,54 @@ const IndustriesServed = () => {
           enterprise-grade IT to organizations of every shape and size.
         </p>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 px-3 md:px-0 gap-y-8 m-auto justify-items-center">
-        {industriesData.map((industry, index) => (
-          <IndustryCard
-            key={index}
-            title={industry.title}
-            percentage={industry.percentage}
-            description={industry.description}
-            className={`${isVisible ? `animate-fade-up ${industry.css}` : "opacity-0"}`}
-          />
-        ))}
+
+      <div
+        className={`grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 ${isVisible ? "animate-fade-up animate-delay-300" : "opacity-0"}`}
+      >
+        <div className="lg:col-span-4 lg:sticky lg:top-28 lg:h-fit">
+          <ul className="flex flex-col gap-1">
+            {industriesData.map((industry) => (
+              <li key={industry.title}>
+                <button
+                  type="button"
+                  onMouseEnter={() => setActive(industry)}
+                  onClick={() => setActive(industry)}
+                  className={`w-full text-left px-4 py-3 rounded-lg transition-colors duration-200 ${
+                    active.title === industry.title
+                      ? "bg-[#EEF5FC] text-[#0325E1] font-semibold"
+                      : "text-p-grey hover:bg-gray-50"
+                  }`}
+                >
+                  {industry.title}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="lg:col-span-8">
+          <div className="min-h-[280px] rounded-3xl border border-gray-100 bg-white p-8 md:p-12 shadow-xl flex flex-col md:flex-row md:items-center gap-8">
+            <div className="md:w-1/2">
+              <H2Heading className="text-2xl md:text-3xl">
+                {active.title}
+              </H2Heading>
+            </div>
+            <div className="md:w-1/2">
+              <span className="text-3xl font-semibold bg-gradient-to-r from-[#0DA7E9] to-[#0429E2] bg-clip-text text-transparent">
+                {active.percentage}%
+              </span>
+              <div className="w-full h-2 bg-grey-light rounded-full mt-3 mb-4">
+                <div
+                  className="h-2 rounded-full bg-gradient-to-r from-[#0DA7E9] to-[#0429E2] transition-all duration-500"
+                  style={{ width: `${active.percentage}%` }}
+                />
+              </div>
+              <p className="min-h-[3.6em] text-p-grey font-normal">
+                {active.description}
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

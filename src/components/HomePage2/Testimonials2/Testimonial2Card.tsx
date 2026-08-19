@@ -25,7 +25,7 @@ const Testimonial2Card = ({
 }: Testimonial2CardProps) => {
   return (
     <div
-      className={`w-full h-full bg-white py-8 px-6 rounded-lg border border-transparent transition-all duration-300 hover:-translate-y-1 hover:border-secondary/40 hover:shadow-lg ${className}`}
+      className={`w-full h-full bg-white py-8 px-6 rounded-2xl border border-gray-100 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${className}`}
     >
       <Quote color="url(#brand-gradient)" size={28} strokeWidth={1.5} />
       <div className="flex mt-3">
