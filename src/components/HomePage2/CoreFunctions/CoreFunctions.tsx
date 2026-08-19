@@ -91,7 +91,7 @@ const CoreFunctions = () => {
           640: { slidesPerView: 2, spaceBetween: 20 },
           1024: { slidesPerView: 3, spaceBetween: 24 },
         }}
-        className={`!overflow-visible ${isVisible ? "animate-fade-up animate-delay-300" : "opacity-0"}`}
+        className={isVisible ? "animate-fade-up animate-delay-300" : "opacity-0"}
       >
         {coreFunctionsData.map((data, index) => (
           <SwiperSlide key={index} className="!h-auto py-2">

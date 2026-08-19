@@ -20,9 +20,14 @@ const StackedMenu = ({
     <div className="relative mr-8" onMouseEnter={onOpen} onMouseLeave={onClose}>
       <Link
         href={"/services"}
-        className={`flex items-center gap-2 text-sm font-medium cursor-pointer transition-colors hover:text-[#0325E1] ${lightMode ? "text-white" : "text-h1-black"}`}
+        className={`group relative flex items-center gap-2 text-sm font-medium cursor-pointer ${lightMode ? "text-white" : "text-h1-black"}`}
       >
-        Services
+        <span className="relative">
+          Services
+          <span
+            className={`absolute -bottom-1 left-0 h-[2px] w-0 transition-all duration-300 group-hover:w-full ${lightMode ? "bg-white" : "bg-[#0325E1]"}`}
+          />
+        </span>
         <ChevronDown
           size={16}
           className={`transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
@@ -42,10 +47,13 @@ const StackedMenu = ({
             </p>
             <Link
               href={"/services"}
-              className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-[#0325E1]"
+              className="group mt-4 inline-flex items-center gap-1 text-sm font-semibold text-[#0325E1]"
             >
               Learn more
-              <ArrowUpRight size={14} />
+              <ArrowUpRight
+                size={14}
+                className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+              />
             </Link>
           </div>
 
@@ -60,12 +68,12 @@ const StackedMenu = ({
                     <Link
                       key={item.title}
                       href={"/services/" + item.link}
-                      className="group flex items-center gap-2 rounded-lg px-3 py-2.5 hover:bg-[#F5FBFF]"
+                      className="group flex items-center gap-2 rounded-lg px-3 py-2.5 transition-shadow duration-200 hover:bg-[#F5FBFF] hover:shadow-sm"
                       onMouseEnter={() => setIsHoverValue(item)}
                     >
                       <ArrowUpRight
                         size={14}
-                        className="shrink-0 text-[#A2A2A2] group-hover:text-[#0325E1] transition-colors"
+                        className="shrink-0 text-[#A2A2A2] transition-all duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[#0325E1]"
                       />
                       <span className="font-medium text-h1-black group-hover:text-[#0325E1] transition-colors">
                         {item.title}
@@ -77,10 +85,13 @@ const StackedMenu = ({
             </div>
             <Link
               href={"/services"}
-              className="mt-2 flex items-center justify-end gap-1 text-sm font-semibold text-[#0325E1]"
+              className="group mt-2 flex items-center justify-end gap-1 text-sm font-semibold text-[#0325E1]"
             >
               View all Services
-              <ArrowUpRight size={14} />
+              <ArrowUpRight
+                size={14}
+                className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+              />
             </Link>
           </div>
 
@@ -106,10 +117,13 @@ const StackedMenu = ({
               </p>
               <Link
                 href={"/services/" + isHoverValue.link}
-                className="inline-flex items-center gap-1 text-sm font-semibold text-[#0325E1]"
+                className="group inline-flex items-center gap-1 text-sm font-semibold text-[#0325E1]"
               >
                 Learn more
-                <ArrowUpRight size={14} />
+                <ArrowUpRight
+                  size={14}
+                  className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                />
               </Link>
             </div>
           </div>

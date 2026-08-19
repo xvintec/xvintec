@@ -4,7 +4,6 @@ import { FC, useEffect, useRef, useState } from "react";
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 
 import { ServicesData } from "@/data/ServicesData";
 import { NavbarType } from "@/types/NavbarTypes";
@@ -19,17 +18,13 @@ type Props = {
   NavbarData: NavbarType;
 };
 
-const darkHeaderRoutes = ["/services", "/home-v2"];
-
 const Navbar: FC<Props> = ({ NavbarData }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [isDark, isDarkSet] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isServiceMobileMenuOpen, setIsServiceMobileMenuOpen] = useState(false);
   const [navHeight, setNavHeight] = useState(80);
 
-  const pathname = usePathname();
   const navRef = useRef<HTMLElement>(null);
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -52,10 +47,6 @@ const Navbar: FC<Props> = ({ NavbarData }) => {
     }
     setIsOpen(false);
   };
-
-  useEffect(() => {
-    isDarkSet(darkHeaderRoutes.includes(pathname));
-  }, [pathname]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -106,14 +97,15 @@ const Navbar: FC<Props> = ({ NavbarData }) => {
     setIsServiceMobileMenuOpen(!isServiceMobileMenuOpen);
   };
 
-  const solidBg = !isDark || scrolled || isOpen || isMenuOpen;
-  const lightMode = isDark && !solidBg;
+  // Header fill flips to solid blue once the page is scrolled; white at rest.
+  const lightMode = scrolled;
 
   return (
     <div className="relative z-40 animate-fade">
       <nav
         ref={navRef}
-        className={`z-40 w-full fixed transition-all duration-300 ease-in-out ${solidBg ? "bg-white/95 backdrop-blur-md ring-1 ring-gray-900/5" : "bg-transparent"} ${scrolled ? "py-3" : "py-4"}`}
+        className={`z-40 w-full fixed transition-all duration-300 ease-in-out ring-1 ${scrolled ? "ring-transparent shadow-lg py-3" : "bg-white/95 ring-gray-900/5 py-4"}`}
+        style={scrolled ? { background: "var(--primary-gradient)" } : undefined}
         onClick={handleOpenClick}
       >
         <div className="fl-container flex flex-row items-center justify-between px-4 xl:px-0">
@@ -149,7 +141,12 @@ const Navbar: FC<Props> = ({ NavbarData }) => {
           </div>
           <div className="hidden items-center gap-2 md:flex">
             <Link href={"/employer"}>
-              <Button showArrow={false}>Reach out to us</Button>
+              <Button
+                showArrow={false}
+                bgColor={scrolled ? "btn-secondary" : "btn-primary"}
+              >
+                Reach out to us
+              </Button>
             </Link>
           </div>
 

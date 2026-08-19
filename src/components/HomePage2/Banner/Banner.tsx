@@ -79,14 +79,31 @@ const Banner = ({ rootElementRef }: any) => {
         </div>
 
         <div
-          className={`relative aspect-[4/3] w-full overflow-hidden rounded-2xl ring-1 ring-white/15 ${isVisible ? "animate-fade animate-delay-300" : "opacity-0"}`}
+          className={`relative aspect-[4/3] w-full ${isVisible ? "animate-fade animate-delay-300" : "opacity-0"}`}
         >
-          <Image
-            src="/images/bussiness-people-working-team-office.jpg"
-            alt="Xvintec team supporting a client"
-            fill
-            className="object-cover"
-            priority
+          <div
+            className="absolute inset-0"
+            style={{
+              WebkitMaskImage:
+                "radial-gradient(ellipse 85% 85% at 50% 50%, black 68%, transparent 100%)",
+              maskImage:
+                "radial-gradient(ellipse 85% 85% at 50% 50%, black 68%, transparent 100%)",
+            }}
+          >
+            <Image
+              src="/images/bussiness-people-working-team-office.jpg"
+              alt="Xvintec team supporting a client"
+              fill
+              className="object-cover"
+              priority
+            />
+          </div>
+          <div
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(ellipse 85% 85% at 50% 50%, transparent 62%, #060F26 100%)",
+            }}
           />
         </div>
       </div>

@@ -25,7 +25,7 @@ const ServiceGridCard = ({
         {tags.map((tag, index) => (
           <span
             key={index}
-            className="text-xs font-medium text-secondary bg-blue-light/40 rounded-full px-3 py-1 transition-colors duration-300 hover:bg-secondary hover:text-white cursor-default"
+            className="inline-block rounded-full bg-blue-light/40 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-[#0325E1]"
           >
             {tag}
           </span>

@@ -49,7 +49,7 @@ const StatsCounter = () => {
   return (
     <div className="fl-container mb-20 md:mb-28" ref={sectionRef}>
       <div
-        className={`grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 ${isVisible ? "animate-fade-up" : "opacity-0"}`}
+        className={`grid grid-cols-2 md:grid-cols-3 gap-5 md:gap-8 ${isVisible ? "animate-fade-up" : "opacity-0"}`}
       >
         {statsData.map((stat, index) => (
           <div
