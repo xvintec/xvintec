@@ -45,8 +45,14 @@ const StackedMenu = ({
       }
     };
 
+    const handleWindowLeave = () => onClose?.();
+
     document.addEventListener("mousemove", handleMove);
-    return () => document.removeEventListener("mousemove", handleMove);
+    document.documentElement.addEventListener("mouseleave", handleWindowLeave);
+    return () => {
+      document.removeEventListener("mousemove", handleMove);
+      document.documentElement.removeEventListener("mouseleave", handleWindowLeave);
+    };
   }, [isOpen, onOpen, onClose]);
 
   return (
@@ -56,7 +62,7 @@ const StackedMenu = ({
         type="button"
         onClick={onOpen}
         onMouseEnter={onOpen}
-        className={`group relative flex items-center gap-2 rounded-full px-3 py-2 -mx-3 -my-2 text-sm font-medium transition-colors duration-200 ${lightMode ? "text-white hover:bg-white/10" : "text-h1-black hover:bg-[#F5FBFF]"}`}
+        className={`group relative flex items-center gap-2 text-sm font-medium ${lightMode ? "text-white" : "text-h1-black"}`}
       >
         <span className="relative">
           Services

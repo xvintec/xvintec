@@ -97,15 +97,14 @@ const Navbar: FC<Props> = ({ NavbarData }) => {
     setIsServiceMobileMenuOpen(!isServiceMobileMenuOpen);
   };
 
-  // Header fill flips to solid blue once the page is scrolled; white at rest.
-  const lightMode = scrolled;
+  // Header is transparent over the hero at rest; fills solid white once scrolled.
+  const lightMode = !scrolled;
 
   return (
     <div className="relative z-40 animate-fade">
       <nav
         ref={navRef}
-        className={`z-40 w-full fixed transition-all duration-300 ease-in-out ring-1 ${scrolled ? "ring-transparent shadow-lg py-3" : "bg-white/95 ring-gray-900/5 py-4"}`}
-        style={scrolled ? { background: "var(--primary-gradient)" } : undefined}
+        className={`z-40 w-full fixed transition-all duration-300 ease-in-out ring-1 ${scrolled ? "bg-white shadow-lg ring-gray-900/5 py-3" : "bg-transparent ring-transparent py-4"}`}
       >
         <div className="fl-container flex flex-row items-center justify-between px-4 xl:px-0">
           <div className="inline-flex items-center" onClick={handleOpenClick}>
@@ -143,7 +142,7 @@ const Navbar: FC<Props> = ({ NavbarData }) => {
             <Link href={"/employer"} onClick={handleOpenClick}>
               <Button
                 showArrow={false}
-                bgColor={scrolled ? "btn-secondary" : "btn-primary"}
+                bgColor={scrolled ? "btn-primary" : "btn-secondary"}
               >
                 Reach out to us
               </Button>

@@ -79,22 +79,26 @@ const Banner = ({ rootElementRef }: any) => {
         </div>
 
         <div
-          className={`relative aspect-[4/3] w-full overflow-hidden rounded-[2rem] ${isVisible ? "animate-fade animate-delay-300" : "opacity-0"}`}
+          className={`relative aspect-[4/3] w-full ${isVisible ? "animate-fade animate-delay-300" : "opacity-0"}`}
         >
-          <Image
-            src="/images/bussiness-people-working-team-office.jpg"
-            alt="Xvintec team supporting a client"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div
-            className="pointer-events-none absolute inset-0"
-            style={{
-              boxShadow:
-                "inset 0 0 70px 30px #060F26, inset 0 0 140px 60px rgba(6,15,38,0.6)",
-            }}
-          />
+          <div className="absolute inset-0 overflow-hidden rounded-[2rem]">
+            <Image
+              src="/images/bussiness-people-working-team-office.jpg"
+              alt="Xvintec team supporting a client"
+              fill
+              className="object-cover"
+              priority
+            />
+            <div
+              className="pointer-events-none absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(115deg, #060F26 0%, rgba(6,15,38,0.5) 14%, rgba(6,15,38,0) 42%)",
+              }}
+            />
+          </div>
+          <div className="pointer-events-none absolute -left-5 -top-5 hidden h-24 w-24 rounded-tl-[1.5rem] border-l-2 border-t-2 border-white/25 md:block" />
+          <div className="pointer-events-none absolute -bottom-5 -right-5 hidden h-24 w-24 rounded-br-[1.5rem] border-b-2 border-r-2 border-white/25 md:block" />
         </div>
       </div>
 
