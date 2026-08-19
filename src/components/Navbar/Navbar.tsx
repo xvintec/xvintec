@@ -106,10 +106,9 @@ const Navbar: FC<Props> = ({ NavbarData }) => {
         ref={navRef}
         className={`z-40 w-full fixed transition-all duration-300 ease-in-out ring-1 ${scrolled ? "ring-transparent shadow-lg py-3" : "bg-white/95 ring-gray-900/5 py-4"}`}
         style={scrolled ? { background: "var(--primary-gradient)" } : undefined}
-        onClick={handleOpenClick}
       >
         <div className="fl-container flex flex-row items-center justify-between px-4 xl:px-0">
-          <div className="inline-flex items-center">
+          <div className="inline-flex items-center" onClick={handleOpenClick}>
             <CompanyLogo
               imageClassName="w-auto h-7 md:h-9"
               className="mr-8"
@@ -129,6 +128,7 @@ const Navbar: FC<Props> = ({ NavbarData }) => {
               isOpen={isOpen}
               onOpen={openDropdown}
               onClose={closeDropdown}
+              onLinkClick={handleOpenClick}
               lightMode={lightMode}
               navHeight={navHeight}
             />
@@ -140,7 +140,7 @@ const Navbar: FC<Props> = ({ NavbarData }) => {
             />
           </div>
           <div className="hidden items-center gap-2 md:flex">
-            <Link href={"/employer"}>
+            <Link href={"/employer"} onClick={handleOpenClick}>
               <Button
                 showArrow={false}
                 bgColor={scrolled ? "btn-secondary" : "btn-primary"}

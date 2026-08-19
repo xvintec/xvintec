@@ -87,6 +87,8 @@ const CoreFunctions = () => {
         }}
         spaceBetween={20}
         slidesPerView={1.15}
+        slidesOffsetBefore={8}
+        slidesOffsetAfter={8}
         breakpoints={{
           640: { slidesPerView: 2, spaceBetween: 20 },
           1024: { slidesPerView: 3, spaceBetween: 24 },
@@ -94,7 +96,7 @@ const CoreFunctions = () => {
         className={isVisible ? "animate-fade-up animate-delay-300" : "opacity-0"}
       >
         {coreFunctionsData.map((data, index) => (
-          <SwiperSlide key={index} className="!h-auto py-2">
+          <SwiperSlide key={index} className="!h-auto py-3">
             <ServiceGridCard
               icon={data.icon}
               title={data.title}

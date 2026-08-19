@@ -4,7 +4,7 @@ import React from "react";
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 
 const Footer = () => {
   const [email, setEmail] = React.useState("");
@@ -91,11 +91,14 @@ const Footer = () => {
               />
 
               <button
-                className="flex shrink-0 items-center gap-1.5 rounded-full bg-white px-4 py-2.5 text-sm font-semibold text-[#0325E1] transition-colors hover:bg-white/90"
+                className="group flex shrink-0 items-center gap-1.5 rounded-full bg-white px-4 py-2.5 text-sm font-semibold text-[#0325E1] transition-colors hover:bg-white/90"
                 onClick={handleSubmit}
               >
                 Subscribe
-                <ArrowRight size={16} />
+                <ArrowUpRight
+                  size={16}
+                  className="transition-transform duration-300 group-hover:rotate-45"
+                />
               </button>
             </div>
           </div>

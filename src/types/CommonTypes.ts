@@ -30,6 +30,7 @@ export interface StackedMenuProps {
   isOpen?: boolean;
   onOpen?: () => void;
   onClose?: () => void;
+  onLinkClick?: () => void;
   lightMode?: boolean;
   navHeight?: number;
 }

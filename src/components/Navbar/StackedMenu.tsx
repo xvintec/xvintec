@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -7,20 +7,56 @@ import { ArrowUpRight, ChevronDown } from "lucide-react";
 import { ServicesData } from "@/data/ServicesData";
 import { StackedMenuProps } from "@/types/CommonTypes";
 
+const RECT_BUFFER = 12;
+
 const StackedMenu = ({
   isOpen,
   onOpen,
   onClose,
+  onLinkClick,
   lightMode,
   navHeight = 80,
 }: StackedMenuProps) => {
   const [isHoverValue, setIsHoverValue] = useState<any>(ServicesData[0]);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const isInsideRect = (rect: DOMRect | undefined, x: number, y: number) =>
+      !!rect &&
+      x >= rect.left - RECT_BUFFER &&
+      x <= rect.right + RECT_BUFFER &&
+      y >= rect.top - RECT_BUFFER &&
+      y <= rect.bottom + RECT_BUFFER;
+
+    const handleMove = (e: MouseEvent) => {
+      const triggerRect = triggerRef.current?.getBoundingClientRect();
+      const panelRect = panelRef.current?.getBoundingClientRect();
+      const inside =
+        isInsideRect(triggerRect, e.clientX, e.clientY) ||
+        isInsideRect(panelRect, e.clientX, e.clientY);
+
+      if (inside) {
+        onOpen?.();
+      } else {
+        onClose?.();
+      }
+    };
+
+    document.addEventListener("mousemove", handleMove);
+    return () => document.removeEventListener("mousemove", handleMove);
+  }, [isOpen, onOpen, onClose]);
 
   return (
-    <div className="relative mr-8" onMouseEnter={onOpen} onMouseLeave={onClose}>
-      <Link
-        href={"/services"}
-        className={`group relative flex items-center gap-2 text-sm font-medium cursor-pointer ${lightMode ? "text-white" : "text-h1-black"}`}
+    <div className="relative mr-8">
+      <button
+        ref={triggerRef}
+        type="button"
+        onClick={onOpen}
+        onMouseEnter={onOpen}
+        className={`group relative flex items-center gap-2 rounded-full px-3 py-2 -mx-3 -my-2 text-sm font-medium transition-colors duration-200 ${lightMode ? "text-white hover:bg-white/10" : "text-h1-black hover:bg-[#F5FBFF]"}`}
       >
         <span className="relative">
           Services
@@ -32,30 +68,32 @@ const StackedMenu = ({
           size={16}
           className={`transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
         />
-      </Link>
+      </button>
 
       <div
+        ref={panelRef}
         className={`fixed left-0 z-10 w-screen justify-center px-4 ${isOpen ? "flex" : "hidden"}`}
         style={{ top: navHeight }}
       >
         <div className="mt-3 w-full max-w-[1200px] grid grid-cols-12 flex-auto overflow-hidden rounded-2xl bg-white text-sm leading-6 shadow-xl ring-1 ring-black/5">
-          <div className="col-span-3 p-6">
+          <Link
+            href={"/services"}
+            onClick={onLinkClick}
+            className="group col-span-3 p-6 transition-shadow duration-200 hover:bg-[#F5FBFF] hover:shadow-sm"
+          >
             <h3 className="text-lg font-semibold text-h1-black">Services</h3>
             <p className="mt-2 text-[#727272] leading-relaxed">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
               eiusmod tempor incididunt ut labore et dolore magna aliqua.
             </p>
-            <Link
-              href={"/services"}
-              className="group mt-4 inline-flex items-center gap-1 text-sm font-semibold text-[#0325E1]"
-            >
+            <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-[#0325E1]">
               Learn more
               <ArrowUpRight
                 size={14}
                 className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
               />
-            </Link>
-          </div>
+            </span>
+          </Link>
 
           <div className="col-span-6 border-x border-gray-100 p-6">
             <div className="text-[#A2A2A2] text-xs font-semibold tracking-wide uppercase pl-2 pb-2">
@@ -70,6 +108,7 @@ const StackedMenu = ({
                       href={"/services/" + item.link}
                       className="group flex items-center gap-2 rounded-lg px-3 py-2.5 transition-shadow duration-200 hover:bg-[#F5FBFF] hover:shadow-sm"
                       onMouseEnter={() => setIsHoverValue(item)}
+                      onClick={onLinkClick}
                     >
                       <ArrowUpRight
                         size={14}
@@ -85,6 +124,7 @@ const StackedMenu = ({
             </div>
             <Link
               href={"/services"}
+              onClick={onLinkClick}
               className="group mt-2 flex items-center justify-end gap-1 text-sm font-semibold text-[#0325E1]"
             >
               View all Services
@@ -117,6 +157,7 @@ const StackedMenu = ({
               </p>
               <Link
                 href={"/services/" + isHoverValue.link}
+                onClick={onLinkClick}
                 className="group inline-flex items-center gap-1 text-sm font-semibold text-[#0325E1]"
               >
                 Learn more

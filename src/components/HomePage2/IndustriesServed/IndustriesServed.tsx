@@ -89,10 +89,10 @@ const IndustriesServed = () => {
         </p>
       </div>
 
-      <div
-        className={`grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start ${isVisible ? "animate-fade-up animate-delay-300" : "opacity-0"}`}
-      >
-        <div className="lg:col-span-4">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+        <div
+          className={`lg:col-span-4 lg:min-h-[620px] ${isVisible ? "animate-fade-up animate-delay-300" : "opacity-0"}`}
+        >
           <ul className="flex flex-col gap-1">
             {industriesData.map((industry) => (
               <li key={industry.title}>
@@ -113,7 +113,9 @@ const IndustriesServed = () => {
           </ul>
         </div>
 
-        <div className="lg:col-span-8 lg:sticky lg:top-28 lg:h-fit">
+        <div
+          className={`lg:col-span-8 lg:sticky lg:top-28 lg:h-fit ${isVisible ? "animate-fade animate-delay-300" : "opacity-0"}`}
+        >
           <div className="min-h-[280px] rounded-3xl border border-gray-100 bg-white p-8 md:p-12 shadow-xl flex flex-col md:flex-row md:items-center gap-8">
             <div className="md:w-1/2">
               <H2Heading className="text-2xl md:text-3xl">
