@@ -62,7 +62,7 @@ const ContactInfo = () => {
         {contactMethods.map((method, index) => (
           <div
             key={index}
-            className={`max-w-md w-full bg-white py-8 px-6 rounded-lg text-center border border-transparent transition-all duration-300 hover:-translate-y-1 hover:border-secondary/40 hover:shadow-lg ${isVisible ? "animate-fade-up animate-delay-300" : "opacity-0"}`}
+            className={`max-w-md w-full bg-white py-8 px-6 rounded-2xl text-center border border-gray-100 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${isVisible ? "animate-fade-up animate-delay-300" : "opacity-0"}`}
           >
             <method.icon
               color="url(#brand-gradient)"
@@ -79,7 +79,7 @@ const ContactInfo = () => {
       <div
         className={`grid grid-cols-1 md:grid-cols-2 gap-5 ${isVisible ? "animate-fade-up animate-delay-500" : "opacity-0"}`}
       >
-        <div className="bg-white py-8 px-6 rounded-lg">
+        <div className="bg-white py-8 px-6 rounded-2xl border border-gray-100">
           <H2Heading>SLA Commitment</H2Heading>
           <ul className="mt-4 space-y-2">
             {slaCommitments.map((sla, index) => (
@@ -93,7 +93,7 @@ const ContactInfo = () => {
             ))}
           </ul>
         </div>
-        <div className="bg-white py-8 px-6 rounded-lg">
+        <div className="bg-white py-8 px-6 rounded-2xl border border-gray-100">
           <H2Heading>Office Locations</H2Heading>
           <p className="text-p-grey font-normal mt-4">
             [Xvintec office locations to be added]
