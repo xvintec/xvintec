@@ -16,11 +16,12 @@ const customPlugin: PluginCreator = ({ addUtilities }) => {
       background: "var(--primary-gradient)", // Equivalent to bg-blue-500
       color: "#ffffff", // Equivalent to text-white
       boxShadow: "0 10px 24px -8px rgba(3, 37, 225, 0.5)",
+      transition: "filter 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease",
       "&:hover": {
-        background: "#0325E1", // Equivalent to hover:bg-blue-600
+        filter: "brightness(1.08)",
       },
       "&:active": {
-        background: "#003E6E",
+        filter: "brightness(0.9)",
       },
     },
     ".btn-secondary": {

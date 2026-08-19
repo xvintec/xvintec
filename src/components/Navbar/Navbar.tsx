@@ -1,9 +1,10 @@
 "use client";
 
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import { ServicesData } from "@/data/ServicesData";
 import { NavbarType } from "@/types/NavbarTypes";
@@ -18,20 +19,43 @@ type Props = {
   NavbarData: NavbarType;
 };
 
+const darkHeaderRoutes = ["/services", "/home-v2"];
+
 const Navbar: FC<Props> = ({ NavbarData }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-
+  const [isDark, isDarkSet] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isServiceMobileMenuOpen, setIsServiceMobileMenuOpen] = useState(false);
+  const [navHeight, setNavHeight] = useState(80);
+
+  const pathname = usePathname();
+  const navRef = useRef<HTMLElement>(null);
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const openDropdown = () => {
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+    setIsOpen(true);
+  };
+
+  const closeDropdown = () => {
+    closeTimerRef.current = setTimeout(() => setIsOpen(false), 200);
+  };
 
   const handleOpenClick = () => {
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
     setIsOpen(false);
   };
 
-  const handleOpenHover = () => {
-    setIsOpen(!isOpen);
-  };
+  useEffect(() => {
+    isDarkSet(darkHeaderRoutes.includes(pathname));
+  }, [pathname]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -50,6 +74,23 @@ const Navbar: FC<Props> = ({ NavbarData }) => {
     };
   }, []);
 
+  useEffect(() => {
+    const measure = () => setNavHeight(navRef.current?.offsetHeight ?? 80);
+    measure();
+    const settleTimer = setTimeout(measure, 320);
+    window.addEventListener("resize", measure);
+    return () => {
+      clearTimeout(settleTimer);
+      window.removeEventListener("resize", measure);
+    };
+  }, [scrolled]);
+
+  useEffect(() => {
+    return () => {
+      if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+    };
+  }, []);
+
   const handleMenuOpen = () => {
     setIsMenuOpen(!isMenuOpen);
 
@@ -65,20 +106,26 @@ const Navbar: FC<Props> = ({ NavbarData }) => {
     setIsServiceMobileMenuOpen(!isServiceMobileMenuOpen);
   };
 
+  const solidBg = !isDark || scrolled || isOpen || isMenuOpen;
+  const lightMode = isDark && !solidBg;
+
   return (
     <div className="relative z-40 animate-fade">
       <nav
-        className={`z-40 w-full fixed bg-white/95 backdrop-blur-md ring-1 ring-gray-900/5 ${scrolled ? "py-3" : "py-4"} transition-all duration-300 ease-in-out`}
+        ref={navRef}
+        className={`z-40 w-full fixed transition-all duration-300 ease-in-out ${solidBg ? "bg-white/95 backdrop-blur-md ring-1 ring-gray-900/5" : "bg-transparent"} ${scrolled ? "py-3" : "py-4"}`}
         onClick={handleOpenClick}
       >
         <div className="fl-container flex flex-row items-center justify-between px-4 xl:px-0">
           <div className="inline-flex items-center">
             <CompanyLogo
-              imageClassName="w-auto h-6 md:h-8"
+              imageClassName="w-auto h-7 md:h-9"
               className="mr-8"
               size={NavbarData.logo.size}
               image={{
-                url: NavbarData.logo.image.url,
+                url: lightMode
+                  ? "/logos/xvintec-logo-white.svg"
+                  : NavbarData.logo.image.url,
                 alt: NavbarData.logo.image.alt,
               }}
               link={NavbarData.logo.link}
@@ -86,9 +133,15 @@ const Navbar: FC<Props> = ({ NavbarData }) => {
           </div>
 
           <div className="hidden items-center gap-2 md:flex">
-            <StackedMenu isOpen={isOpen} onClick={handleOpenHover} />
-            <Menu
+            <StackedMenu
               isOpen={isOpen}
+              onOpen={openDropdown}
+              onClose={closeDropdown}
+              lightMode={lightMode}
+              navHeight={navHeight}
+            />
+            <Menu
+              lightMode={lightMode}
               className="hidden md:flex"
               links={NavbarData?.menuItems}
               onLinkClick={handleOpenClick}
@@ -104,7 +157,7 @@ const Navbar: FC<Props> = ({ NavbarData }) => {
             <button onClick={handleMenuOpen}>
               {!isMenuOpen === true ? (
                 <Image
-                  src="/icons/menu.svg"
+                  src={lightMode ? "/icons/menu-white.svg" : "/icons/menu.svg"}
                   width={40}
                   height={40}
                   alt="hamburger-icon"
@@ -177,8 +230,6 @@ const Navbar: FC<Props> = ({ NavbarData }) => {
               </div>
 
               <Menu
-                scrolled={scrolled}
-                isOpen={isOpen}
                 isServiceMobileMenuOpen={isServiceMobileMenuOpen}
                 className="flex flex-col gap-y-0 animate-fade"
                 linkClassNames="py-4 px-6 hover:bg-blue-600 hover:text-white"

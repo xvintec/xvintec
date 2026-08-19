@@ -4,8 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 type Props = {
-  isOpen: boolean;
-  scrolled?: boolean;
+  lightMode?: boolean;
   isServiceMobileMenuOpen?: boolean;
   links: {
     title: string;
@@ -27,7 +26,7 @@ const Menu = (props: Props) => {
       {props.links.map((link, index) => (
         <Link
           key={index}
-          className={`text-h1-black transition-colors hover:text-[#0325E1] ${props.linkClassNames} border-[#CDD9E0] border-b-[1px] md:border-0 ${pathname == link.link ? " font-semibold" : "font-medium"}`}
+          className={`${props.lightMode ? "text-white" : "text-h1-black"} transition-colors hover:text-[#0325E1] ${props.linkClassNames} border-[#CDD9E0] border-b-[1px] md:border-0 ${pathname == link.link ? " font-semibold" : "font-medium"}`}
           href={link.link}
           onClick={props.onLinkClick}
         >

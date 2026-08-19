@@ -28,7 +28,7 @@ function Button({
         <ArrowUpRight
           size={18}
           strokeWidth={2}
-          className="shrink-0 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+          className="shrink-0 transition-transform duration-300 group-hover:-rotate-45"
         />
       )}
     </button>

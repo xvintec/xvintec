@@ -28,7 +28,10 @@ export interface ButtonProps {
 
 export interface StackedMenuProps {
   isOpen?: boolean;
-  onClick?: () => void;
+  onOpen?: () => void;
+  onClose?: () => void;
+  lightMode?: boolean;
+  navHeight?: number;
 }
 
 export interface HeaderProps {
