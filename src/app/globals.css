@@ -100,6 +100,52 @@
   }
 }
 
+/* Carousel dots stand in for the arrow buttons, which are desktop-only. */
+.core-swiper {
+  padding-bottom: 28px;
+}
+
+.core-swiper .swiper-pagination {
+  bottom: 0;
+}
+
+.core-swiper .swiper-pagination-bullet {
+  background: #0325e1;
+  opacity: 0.25;
+  transition: opacity 0.2s ease, width 0.2s ease;
+}
+
+.core-swiper .swiper-pagination-bullet-active {
+  opacity: 1;
+  width: 20px;
+  border-radius: 4px;
+}
+
+@media (min-width: 768px) {
+  .core-swiper {
+    padding-bottom: 0;
+  }
+
+  .core-swiper .swiper-pagination {
+    display: none;
+  }
+}
+
+/* Phones render sections immediately instead of animating them in on scroll:
+   the reveal was intermittently leaving content invisible. Opt an element back
+   in with `mobile-animate` (used by the hero, which would otherwise land flat). */
+@media (max-width: 767px) {
+  .animate-fade:not(.mobile-animate),
+  .animate-fade-up:not(.mobile-animate),
+  .animate-fade-down:not(.mobile-animate),
+  .animate-fade-left:not(.mobile-animate),
+  .animate-fade-right:not(.mobile-animate) {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
 .css-13cymwt-control,
 .css-t3ipsp-control {
   /* Your overridden styles here */

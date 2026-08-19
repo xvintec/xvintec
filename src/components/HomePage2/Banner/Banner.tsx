@@ -38,7 +38,7 @@ const Banner = ({ rootElementRef }: any) => {
 
   return (
     <div
-      className="relative overflow-hidden pt-32 pb-16 md:pt-44 md:pb-24"
+      className="relative overflow-hidden pt-32 pb-16 md:flex md:min-h-[680px] md:flex-col md:justify-center md:pt-44 md:pb-24"
       style={{ background: "var(--hero-gradient)" }}
       ref={sectionRef}
     >
@@ -49,15 +49,66 @@ const Banner = ({ rootElementRef }: any) => {
         open={isPopupOpen}
       />
 
-      <div className="fl-container grid grid-cols-1 items-center gap-12 md:grid-cols-2">
-        <div>
+      {/* Hero media, blended the way Highspring does it: the photo is a full-bleed
+          background layer, then the brand gradient is painted back over it with a
+          mask so it dissolves into the copy on the left instead of sitting in a box. */}
+      <div className="pointer-events-none absolute inset-0">
+        <Image
+          src="/images/bussiness-people-working-team-office.jpg"
+          alt="Xvintec team supporting a client"
+          fill
+          sizes="100vw"
+          className="object-cover object-[72%_center]"
+          priority
+        />
+        <div className="absolute inset-0 bg-[#060F26]/20" />
+        <div
+          className="absolute inset-0"
+          style={{
+            background: "var(--hero-gradient)",
+            maskImage:
+              "linear-gradient(265.64deg, transparent 20%, #000 56%)",
+            WebkitMaskImage:
+              "linear-gradient(265.64deg, transparent 20%, #000 56%)",
+          }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background: "var(--hero-gradient)",
+            maskImage:
+              "linear-gradient(286.63deg, transparent 85.15%, #000 100%)",
+            WebkitMaskImage:
+              "linear-gradient(286.63deg, transparent 85.15%, #000 100%)",
+          }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background: "var(--hero-gradient)",
+            maskImage:
+              "linear-gradient(0deg, transparent 68.41%, rgba(0,0,0,0.8) 100%)",
+            WebkitMaskImage:
+              "linear-gradient(0deg, transparent 68.41%, rgba(0,0,0,0.8) 100%)",
+          }}
+        />
+        {/* On phones the copy spans the full width, so the photo drops back to a
+            faint backdrop rather than sitting directly behind the text. */}
+        <div
+          className="absolute inset-0 md:hidden"
+          style={{ background: "var(--hero-gradient)", opacity: 0.88 }}
+        />
+      </div>
+
+      <div className="fl-container relative">
+        <div className="max-w-xl lg:max-w-2xl">
           <h1
-            className={`text-[38px] md:text-[56px] leading-snug md:leading-[1.15] text-white font-semibold ${isVisible ? "animate-fade-up" : "opacity-0"}`}
+            className={`text-[38px] md:text-[56px] leading-snug md:leading-[1.15] text-white font-semibold ${isVisible ? "mobile-animate animate-fade-up" : "opacity-0"}`}
           >
             Enterprise-Grade IT Without the Headcount
           </h1>
           <p
-            className={`text-[#AAB4CC] font-light mt-5 max-w-xl ${isVisible ? "animate-fade-up animate-delay-300" : "opacity-0"}`}
+            className={`text-[#AAB4CC] font-light mt-5 max-w-xl ${isVisible ? "mobile-animate animate-fade-up animate-delay-300" : "opacity-0"}`}
           >
             Fully managed IT, cybersecurity, and infrastructure for growing
             businesses across every sector — expert support without the cost
@@ -65,45 +116,25 @@ const Banner = ({ rootElementRef }: any) => {
           </p>
 
           <div
-            className={`flex flex-col sm:flex-row gap-4 mt-8 ${isVisible ? "animate-fade animate-delay-500" : "opacity-0"}`}
+            className={`flex flex-col sm:flex-row gap-4 mt-8 ${isVisible ? "mobile-animate animate-fade animate-delay-500" : "opacity-0"}`}
           >
-            <Button onClick={() => setIsPopupOpen(true)}>
+            <Button
+              onClick={() => setIsPopupOpen(true)}
+              className="w-full sm:w-auto"
+            >
               Book a free consultation
             </Button>
-            <a href="#case-studies">
-              <Button bgColor="btn-outline-light">
+            <a href="#case-studies" className="block w-full sm:inline-block sm:w-auto">
+              <Button bgColor="btn-outline-light" className="w-full sm:w-auto">
                 See how we&apos;ve transformed firms
               </Button>
             </a>
           </div>
         </div>
-
-        <div
-          className={`relative aspect-[4/3] w-full ${isVisible ? "animate-fade animate-delay-300" : "opacity-0"}`}
-        >
-          <div className="absolute inset-0 overflow-hidden rounded-[2rem]">
-            <Image
-              src="/images/bussiness-people-working-team-office.jpg"
-              alt="Xvintec team supporting a client"
-              fill
-              className="object-cover"
-              priority
-            />
-            <div
-              className="pointer-events-none absolute inset-0"
-              style={{
-                background:
-                  "linear-gradient(115deg, #060F26 0%, rgba(6,15,38,0.5) 14%, rgba(6,15,38,0) 42%)",
-              }}
-            />
-          </div>
-          <div className="pointer-events-none absolute -left-5 -top-5 hidden h-24 w-24 rounded-tl-[1.5rem] border-l-2 border-t-2 border-white/25 md:block" />
-          <div className="pointer-events-none absolute -bottom-5 -right-5 hidden h-24 w-24 rounded-br-[1.5rem] border-b-2 border-r-2 border-white/25 md:block" />
-        </div>
       </div>
 
       <div
-        className={`fl-container flex flex-col sm:flex-row gap-8 sm:gap-12 mt-12 md:mt-16 ${isVisible ? "animate-fade-up animate-delay-700" : "opacity-0"}`}
+        className={`fl-container relative flex flex-col sm:flex-row gap-8 sm:gap-12 mt-12 md:mt-16 ${isVisible ? "mobile-animate animate-fade-up animate-delay-700" : "opacity-0"}`}
       >
         {bannerStats.map((stat, index) => (
           <div key={index} className="flex items-center gap-3">

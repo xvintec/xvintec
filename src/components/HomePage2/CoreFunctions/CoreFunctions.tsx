@@ -12,6 +12,8 @@ import {
   Wallet,
 } from "lucide-react";
 import "swiper/css";
+import "swiper/css/pagination";
+import { Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperType } from "swiper/types";
 
@@ -82,21 +84,23 @@ const CoreFunctions = () => {
       </div>
 
       <Swiper
+        modules={[Pagination]}
         onBeforeInit={(swiper) => {
           swiperRef.current = swiper;
         }}
         spaceBetween={20}
         slidesPerView={1.15}
-        slidesOffsetBefore={8}
-        slidesOffsetAfter={8}
+        slidesOffsetBefore={20}
+        slidesOffsetAfter={20}
+        pagination={{ clickable: true }}
         breakpoints={{
           640: { slidesPerView: 2, spaceBetween: 20 },
           1024: { slidesPerView: 3, spaceBetween: 24 },
         }}
-        className={isVisible ? "animate-fade-up animate-delay-300" : "opacity-0"}
+        className={`core-swiper ${isVisible ? "animate-fade-up animate-delay-300" : "opacity-0"}`}
       >
         {coreFunctionsData.map((data, index) => (
-          <SwiperSlide key={index} className="!h-auto py-3">
+          <SwiperSlide key={index} className="!h-auto py-6">
             <ServiceGridCard
               icon={data.icon}
               title={data.title}

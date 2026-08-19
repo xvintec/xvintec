@@ -26,17 +26,6 @@ const CareersCurrentOpenings = () => {
       <Button className="mt-3 animate-fade animate-delay-700">
         View all openings
       </Button>
-
-      <hr
-        className={`h-[1.5px] border-none  rounded my-14 ${isVisible ? " animate-fade-up" : "opacity-0"}`}
-        style={{
-          height: "1px",
-          backgroundImage:
-            "linear-gradient(to right, #ccccce 50%, transparent 50%)",
-          backgroundSize: "30px 100%",
-          border: "none",
-        }}
-      />
     </div>
   );
 };

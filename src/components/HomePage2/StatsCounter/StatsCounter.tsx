@@ -2,7 +2,9 @@
 
 import React from "react";
 
-import useIntersectionAnimation from "@/components/Common/UseScrollAnimation/UseScrollAnimation";
+import useIntersectionAnimation, {
+  useInView,
+} from "@/components/Common/UseScrollAnimation/UseScrollAnimation";
 
 import CountUpValue from "./CountUpValue";
 
@@ -47,10 +49,14 @@ const statsData = [
 
 const StatsCounter = () => {
   const [sectionRef, isVisible] = useIntersectionAnimation();
+  // Counting is driven by its own observer so the numbers still tick up on
+  // scroll-in on phones, where the fade-in reveal is switched off.
+  const [countRef, hasEnteredView] = useInView();
 
   return (
     <div className="fl-container mt-16 mb-20 md:mt-20 md:mb-28" ref={sectionRef}>
       <div
+        ref={countRef}
         className={`grid grid-cols-2 md:grid-cols-3 gap-5 md:gap-8 ${isVisible ? "animate-fade-up" : "opacity-0"}`}
       >
         {statsData.map((stat, index) => (
@@ -64,7 +70,7 @@ const StatsCounter = () => {
             </span>
             <div>
               <div className="text-4xl md:text-5xl font-semibold">
-                <CountUpValue value={stat.value} start={isVisible} />
+                <CountUpValue value={stat.value} start={hasEnteredView} />
               </div>
               <p className="mt-2 text-sm font-light text-white/80">
                 {stat.label}

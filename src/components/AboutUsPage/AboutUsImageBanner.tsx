@@ -2,30 +2,28 @@
 
 import React from "react";
 
-import Image from "next/image";
-
-import H1Heading from "../Common/Headings/H1Heading";
-import useIntersectionAnimation from "../Common/UseScrollAnimation/UseScrollAnimation";
+import AboutSplitSection from "./AboutSplitSection";
 
 const AboutUsImageBanner = () => {
-  const [sectionRef, isVisible] = useIntersectionAnimation();
-
   return (
-    <div ref={sectionRef}>
-      <H1Heading
-        className={`text-center mb-0 ${isVisible ? " animate-fade-up" : "opacity-0"}`}
-      >
-        Our Story
-      </H1Heading>
-      <Image
-        className={`h-[250px] md:h-[380px] mt-8 w-screen max-w-[2400px] m-auto ${isVisible ? " animate-fade-up" : "opacity-0"}`}
-        src="/header/about-us-banner.png"
-        width={1400}
-        height={500}
-        alt="about-us-banner-image"
-        style={{ objectFit: "cover" }}
-      />
-    </div>
+    <AboutSplitSection
+      title="Our Story"
+      images={[
+        "/header/about-us-banner.png",
+        "/images/group-of-people-working-out-business-plan-in-an-office-scaled.jpg",
+        "/images/table-business-plan.png",
+        "/images/bussiness-people-working-team-office.jpg",
+      ]}
+      imageAlt="The Xvintec team at work"
+      className="mb-20 md:mb-28"
+    >
+      <p>
+        Our culture is built on collaboration, respect, and a shared passion for
+        excellence. From team-building activities to volunteer opportunities,
+        we&apos;re committed to creating a supportive and inclusive environment
+        where everyone can thrive
+      </p>
+    </AboutSplitSection>
   );
 };
 

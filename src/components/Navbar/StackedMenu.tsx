@@ -31,12 +31,29 @@ const StackedMenu = ({
       y >= rect.top - RECT_BUFFER &&
       y <= rect.bottom + RECT_BUFFER;
 
+    // The header's own padding plus the panel's offset leave a strip under the
+    // trigger that belongs to neither rect. Count it as part of the menu, so
+    // travelling down into the panel never trips the close timer.
+    const isInsideBridge = (
+      trigger: DOMRect | undefined,
+      panel: DOMRect | undefined,
+      x: number,
+      y: number
+    ) =>
+      !!trigger &&
+      !!panel &&
+      y >= trigger.bottom &&
+      y <= panel.top + RECT_BUFFER &&
+      x >= panel.left &&
+      x <= panel.right;
+
     const handleMove = (e: MouseEvent) => {
       const triggerRect = triggerRef.current?.getBoundingClientRect();
       const panelRect = panelRef.current?.getBoundingClientRect();
       const inside =
         isInsideRect(triggerRect, e.clientX, e.clientY) ||
-        isInsideRect(panelRect, e.clientX, e.clientY);
+        isInsideRect(panelRect, e.clientX, e.clientY) ||
+        isInsideBridge(triggerRect, panelRect, e.clientX, e.clientY);
 
       if (inside) {
         onOpen?.();
@@ -77,15 +94,17 @@ const StackedMenu = ({
       </button>
 
       <div
-        ref={panelRef}
         className={`fixed left-0 z-10 w-screen justify-center px-4 ${isOpen ? "flex" : "hidden"}`}
         style={{ top: navHeight }}
       >
-        <div className="mt-3 w-full max-w-[1200px] grid grid-cols-12 flex-auto overflow-hidden rounded-2xl bg-white text-sm leading-6 shadow-xl ring-1 ring-black/5">
+        <div
+          ref={panelRef}
+          className="mt-1 w-full max-w-[1200px] grid grid-cols-12 flex-auto overflow-hidden rounded-2xl bg-white text-sm leading-6 shadow-xl ring-1 ring-black/5"
+        >
           <Link
             href={"/services"}
             onClick={onLinkClick}
-            className="group col-span-3 p-6 transition-shadow duration-200 hover:bg-[#F5FBFF] hover:shadow-sm"
+            className="group col-span-3 self-start rounded-xl p-6 transition-shadow duration-200 hover:bg-[#F5FBFF] hover:shadow-sm"
           >
             <h3 className="text-lg font-semibold text-h1-black">Services</h3>
             <p className="mt-2 text-[#727272] leading-relaxed">

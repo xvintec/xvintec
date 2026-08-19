@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React from "react";
 
-import Button from "@/components/Common/Button/Button";
+import Image from "next/image";
+
 import H1Heading from "@/components/Common/Headings/H1Heading";
+import H2Heading from "@/components/Common/Headings/H2Heading";
 import useIntersectionAnimation from "@/components/Common/UseScrollAnimation/UseScrollAnimation";
-
-import OurServicesCard from "../HomePage/OurServices/OurServicesCard";
 
 const AboutUsOurValues = () => {
   const [sectionRef, isVisible] = useIntersectionAnimation();
@@ -50,35 +50,42 @@ const AboutUsOurValues = () => {
   ];
 
   return (
-    <div className={`fl-container mb-20 md:mb-28`} ref={sectionRef}>
+    <div className="fl-container mb-20 md:mb-28" ref={sectionRef}>
       <H1Heading
-        className={`text-center ${isVisible ? " animate-fade-up" : "opacity-0"}`}
+        className={`text-center ${isVisible ? "animate-fade-up" : "opacity-0"}`}
       >
         Our Values
       </H1Heading>
       <p
-        className={`py-5 text-p-grey font-light mb-10 max-w-5xl text-center m-auto ${isVisible ? " animate-fade-up animate-delay-300" : "opacity-0"}`}
+        className={`py-5 text-p-grey font-light mb-10 max-w-5xl text-center m-auto ${isVisible ? "animate-fade-up animate-delay-300" : "opacity-0"}`}
       >
         At Xvintec, our values aren&apos;t just words on a wall, they&apos;re
         the guiding principles that inform everything we do
       </p>
 
-      <div
-        className={`flex flex-wrap justify-center gap-8 px-3 md:px-0 gap-y-8 m-auto justify-items-center`}
-      >
+      <div className="flex flex-wrap justify-center gap-6 md:gap-8 px-3 md:px-0">
         {howWeKnowData.map((data, index) => (
-          <OurServicesCard
+          <div
             key={index}
-            image={data.image}
-            title={data.title}
-            content={data.content}
-            className={`max-w-sm ${isVisible ? `animate-fade-up ${data.css}` : "opacity-0"}`}
-          />
+            /* Matches the featured "200% Money-Back" card on the home page. */
+            className={`relative w-full max-w-sm rounded-2xl py-9 px-7 md:px-8 text-white shadow-2xl transition-all duration-300 hover:-translate-y-1 ${isVisible ? `animate-fade-up ${data.css}` : "opacity-0"}`}
+            style={{ background: "var(--hero-gradient)" }}
+          >
+            {/* Icons are light grey on a brand gradient, so they are rendered
+                white here to read on the dark card. */}
+            <Image
+              src={data.image}
+              alt=""
+              width={40}
+              height={40}
+              className="brightness-0 invert"
+              style={{ objectFit: "contain" }}
+            />
+            <H2Heading className="mt-4 text-white">{data.title}</H2Heading>
+            <p className="mt-3 font-normal text-white/80">{data.content}</p>
+          </div>
         ))}
       </div>
-      <div
-        className={`text-center ${isVisible ? "animate-fade-up animate-delay-1000" : "opacity-0"}`}
-      ></div>
     </div>
   );
 };

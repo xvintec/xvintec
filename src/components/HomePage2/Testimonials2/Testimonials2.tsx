@@ -2,8 +2,6 @@
 
 import React from "react";
 
-import Image from "next/image";
-
 import H1Heading from "@/components/Common/Headings/H1Heading";
 import useIntersectionAnimation from "@/components/Common/UseScrollAnimation/UseScrollAnimation";
 
@@ -13,69 +11,57 @@ import Testimonial2Card from "./Testimonial2Card";
 // competitor's named clients) — swap in real client quotes when available.
 const testimonials2 = [
   {
-    initials: "SK",
     name: "Sarah Klein",
     role: "COO",
     industry: "Software / SaaS",
     description:
       "Xvintec completely transformed how we operate. Our downtime went from weeks per year to virtually zero, and their team responds within minutes, not days.",
     count: 5,
-    tint: "rgba(3,37,225,0.55)",
     css: "animate-delay-300",
   },
   {
-    initials: "DM",
     name: "David Moreau",
     role: "Managing Partner",
     industry: "Accounting",
     description:
       "We were drowning in compliance anxiety before Xvintec stepped in. They had us audit-ready and our backup strategy rock-solid in under a month.",
     count: 5,
-    tint: "rgba(13,167,233,0.55)",
     css: "animate-delay-500",
   },
   {
-    initials: "DPN",
     name: "Dr. Priya Nair",
     role: "Clinic Director",
     industry: "Healthcare",
     description:
       "As a healthcare practice, data privacy is non-negotiable. Xvintec understood our compliance requirements from day one and built infrastructure we can trust.",
     count: 5,
-    tint: "rgba(10,27,61,0.6)",
     css: "animate-delay-700",
   },
   {
-    initials: "JL",
     name: "James Lowry",
     role: "Founder & CEO",
     industry: "Early-stage SaaS",
     description:
       "Switching to managed IT with Xvintec saved us the equivalent of a full-time hire. Their proactive monitoring caught a threat before it cost us a single dollar.",
     count: 5,
-    tint: "rgba(21,93,252,0.55)",
     css: "animate-delay-300",
   },
   {
-    initials: "AO",
     name: "Aisha Owusu",
     role: "Head of Operations",
     industry: "Consulting",
     description:
       "Our team is fully remote across three time zones and Xvintec made that seamless. Unified comms, secure VPN, and a helpdesk that actually helps.",
     count: 5,
-    tint: "rgba(3,105,161,0.55)",
     css: "animate-delay-500",
   },
   {
-    initials: "MT",
     name: "Marco Tellez",
     role: "Director of IT",
     industry: "Retail",
     description:
       "We run several retail locations and the stability Xvintec delivered is night and day. Outages at checkout used to cost us thousands. That problem is gone now.",
     count: 5,
-    tint: "rgba(30,58,138,0.55)",
     css: "animate-delay-700",
   },
 ];
@@ -103,17 +89,15 @@ const Testimonials2 = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {testimonials2.map((testimonial, index) => (
           <Testimonial2Card
             key={index}
-            initials={testimonial.initials}
             name={testimonial.name}
             role={testimonial.role}
             industry={testimonial.industry}
             description={testimonial.description}
             count={testimonial.count}
-            tint={testimonial.tint}
             className={
               isVisible ? `animate-fade-up ${testimonial.css}` : "opacity-0"
             }

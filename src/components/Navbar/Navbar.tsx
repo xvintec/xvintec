@@ -165,6 +165,7 @@ const Navbar: FC<Props> = ({ NavbarData }) => {
                   width={40}
                   height={40}
                   alt="close-icon"
+                  className={lightMode ? "invert" : ""}
                 />
               )}
             </button>
