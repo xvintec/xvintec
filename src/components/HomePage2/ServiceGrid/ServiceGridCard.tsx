@@ -17,7 +17,7 @@ const ServiceGridCard = ({
 }: ServiceGridCardProps) => {
   return (
     <div
-      className={`max-w-md w-full bg-white py-8 px-6 rounded-lg border border-transparent transition-all duration-300 hover:-translate-y-1 hover:border-secondary/40 hover:shadow-lg ${className}`}
+      className={`max-w-md w-full bg-white py-8 px-6 rounded-2xl border border-transparent transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${className}`}
     >
       {icon}
       <H2Heading className="py-5">{title}</H2Heading>
