@@ -9,8 +9,11 @@
 #   1. this file (.github/workflows/deploy-preview.yml)
 #   2. public/.nojekyll
 #   3. the `isGithubPages` block in next.config.mjs (output/basePath/
-#      assetPrefix/trailingSlash + images.unoptimized)
-#   4. the GitHub Pages site itself, under repo Settings -> Pages
+#      assetPrefix/trailingSlash + the custom image loader)
+#   4. image-loader.mjs
+#   5. scripts/fix-pages-asset-paths.mjs
+#   6. the BASE_PATH const + favicon href in src/app/layout.tsx
+#   7. the GitHub Pages site itself, under repo Settings -> Pages
 #
 # Nothing here touches `main` — the trigger is the v2 branch only.
 # ---------------------------------------------------------------------------
@@ -52,6 +55,10 @@ jobs:
         run: npm run build
         env:
           GITHUB_PAGES: "true" # switches next.config.mjs into export mode
+
+      # Tailwind bg-[url()] compiles to absolute url() that basePath misses.
+      - name: Prefix absolute CSS asset paths
+        run: node scripts/fix-pages-asset-paths.mjs
 
       - uses: actions/configure-pages@v5
 
