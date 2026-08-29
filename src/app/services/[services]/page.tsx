@@ -1,22 +1,20 @@
-"use client";
-
-import { useMemo } from "react";
-
-import { useParams } from "next/navigation";
-
 import { ServicesData } from "@/data/ServicesData";
 
 import IndividualService from "./IndividualService";
 
-const Page = () => {
-  const params = useParams<{ services: string }>();
+// A static export needs every service page enumerated up front.
+export function generateStaticParams() {
+  return ServicesData.map((service: any) => ({ services: service.link }));
+}
 
-  const selectedService = useMemo(
-    () =>
-      ServicesData.find((item: any) => item.link === params.services) ??
-      null,
-    [params.services]
-  );
+const Page = async ({
+  params,
+}: {
+  params: Promise<{ services: string }>;
+}) => {
+  const { services } = await params;
+  const selectedService =
+    ServicesData.find((item: any) => item.link === services) ?? null;
 
   return <>{selectedService && <IndividualService data={selectedService} />}</>;
 };

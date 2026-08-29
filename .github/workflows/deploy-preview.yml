@@ -1,0 +1,70 @@
+# ---------------------------------------------------------------------------
+# TEMPORARY — CLIENT PREVIEW ONLY. REMOVE BEFORE GOING LIVE.
+#
+# This workflow publishes the `homepage-v2` branch to GitHub Pages so the
+# client can review the revamped pages and supply real content/feedback. It is
+# NOT the production deployment.
+#
+# When the revamp ships to the live server, delete the preview setup:
+#   1. this file (.github/workflows/deploy-preview.yml)
+#   2. public/.nojekyll
+#   3. the `isGithubPages` block in next.config.mjs (output/basePath/
+#      assetPrefix/trailingSlash + images.unoptimized)
+#   4. the GitHub Pages site itself, under repo Settings -> Pages
+#
+# Nothing here touches `main` — the trigger is the v2 branch only.
+# ---------------------------------------------------------------------------
+
+name: Deploy preview to GitHub Pages
+
+on:
+  push:
+    branches: [homepage-v2]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Let a running deploy finish rather than publishing a half-built site.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+        env:
+          HUSKY: 0 # git hooks are irrelevant in CI
+
+      - name: Build static export
+        run: npm run build
+        env:
+          GITHUB_PAGES: "true" # switches next.config.mjs into export mode
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
