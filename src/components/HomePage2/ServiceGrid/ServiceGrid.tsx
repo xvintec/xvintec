@@ -140,6 +140,7 @@ const ServiceGrid = () => {
             title={data.title}
             tags={data.tags}
             description={data.description}
+            hoverFill
             className={`${isVisible ? `animate-fade-up ${data.css}` : "opacity-0"}`}
           />
         ))}

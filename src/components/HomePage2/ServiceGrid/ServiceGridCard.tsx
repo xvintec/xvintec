@@ -7,6 +7,11 @@ interface ServiceGridCardProps {
   title: string;
   tags: string[];
   description?: string;
+  /**
+   * Opt in to the blue bar that fills across the foot of the card on hover.
+   * Only the "What We Do" grid uses it.
+   */
+  hoverFill?: boolean;
   className?: string;
 }
 
@@ -15,6 +20,7 @@ const ServiceGridCard = ({
   title,
   tags,
   description,
+  hoverFill = false,
   className,
 }: ServiceGridCardProps) => {
   return (
@@ -48,6 +54,12 @@ const ServiceGridCard = ({
             </p>
           </div>
         </>
+      )}
+
+      {hoverFill && (
+        /* Sits above the description overlay so it stays visible as the copy
+           fades in. */
+        <span className="pointer-events-none absolute bottom-0 left-0 z-10 h-1 w-0 bg-gradient-to-r from-[#0DA7E9] to-[#0325E1] transition-all duration-500 ease-out group-hover:w-full" />
       )}
     </div>
   );
