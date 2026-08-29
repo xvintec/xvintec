@@ -17,6 +17,11 @@ export const metadata: Metadata = {
 
 const GTM_ID = "GTM-K6MGDRMS"; // Replace with your actual GTM ID
 
+// TEMPORARY — CLIENT PREVIEW ONLY. REMOVE BEFORE GOING LIVE (see the checklist
+// in .github/workflows/deploy-preview.yml). Raw <link href> is not rewritten by
+// `basePath`, so the favicon 404s on GitHub Project Pages without this.
+const BASE_PATH = process.env.GITHUB_PAGES === "true" ? "/xvintec" : "";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -26,7 +31,7 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/logos/favicon.png" />
+        <link rel="icon" href={`${BASE_PATH}/logos/favicon.png`} />
         <link rel="preconnect" href="https://fonts.gstatic.com" />
         <Script id="gtm-script" strategy="afterInteractive">
           {`

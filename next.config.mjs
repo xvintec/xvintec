@@ -27,7 +27,11 @@ const nextConfig = {
       }
     : {}),
   images: {
-    unoptimized: isGithubPages,
+    // A custom loader (rather than `unoptimized`) so public/ image paths get the
+    // basePath prefix they need on Project Pages. Also satisfies static export.
+    ...(isGithubPages
+      ? { loader: "custom", loaderFile: "./image-loader.mjs" }
+      : {}),
     remotePatterns: [
       {
         protocol: "https",
