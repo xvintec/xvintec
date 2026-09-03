@@ -190,3 +190,246 @@ span.swiper-pagination-bullet.swiper-pagination-bullet-active {
 .max-lines::after {
   content: "...";
 }
+
+/* Smoky buttons (WebGL smoke-shader hover, ported from hero-section.html).
+   Kept in globals.css rather than styled-jsx so the rules ship in the
+   render-blocking stylesheet — a styled-jsx <style> tag only lands after
+   hydration, which flashed unstyled buttons on a hard reload. */
+.smoky-btn {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  border-radius: 999px;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+.smoky-btn .smoky-btn__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.55s ease;
+  pointer-events: none;
+}
+.smoky-btn:hover .smoky-btn__canvas,
+.smoky-btn:focus-visible .smoky-btn__canvas {
+  opacity: 1;
+}
+.smoky-btn .smoky-btn__content {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  font-weight: 600;
+  font-size: 14.5px;
+  white-space: nowrap;
+  transition: color 0.45s ease, text-shadow 0.45s ease;
+}
+.smoky-btn .smoky-btn__icon {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  transition: transform 0.35s ease;
+}
+.smoky-btn:hover .smoky-btn__icon {
+  transform: translateX(3px);
+}
+
+.smoky-btn--primary {
+  background: linear-gradient(105deg, #0daae9 0%, #0325e1 100%);
+}
+.smoky-btn--primary .smoky-btn__content {
+  color: #fff;
+}
+.smoky-btn--primary:hover .smoky-btn__content {
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
+}
+
+.smoky-btn--ghost {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.35);
+}
+.smoky-btn--ghost .smoky-btn__content {
+  color: #fff;
+}
+.smoky-btn--ghost:hover {
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.6);
+}
+.smoky-btn--ghost:hover .smoky-btn__content {
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+}
+
+.smoky-btn--white {
+  background: #fff;
+}
+.smoky-btn--white .smoky-btn__content {
+  color: #0a1b3d;
+  padding: 11px 22px;
+  font-size: 13.5px;
+}
+.smoky-btn--white:hover .smoky-btn__content {
+  color: #fff;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.55);
+}
+
+.smoky-btn.no-motion .smoky-btn__canvas {
+  display: none;
+}
+.smoky-btn.no-motion.smoky-btn--white:hover {
+  background: #0325e1;
+}
+.smoky-btn.no-motion.smoky-btn--ghost:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+.smoky-btn.no-motion.smoky-btn--primary:hover {
+  filter: brightness(1.12);
+}
+
+/* WebGL hero banner (Aether Flow particle layout, ported from
+   hero-section.html). See the note above on why this lives here rather than
+   in a styled-jsx block. */
+.webgl-banner {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: #060f26;
+}
+.webgl-banner__glow {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  top: 50%;
+  left: 50%;
+  width: 900px;
+  height: 900px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    circle,
+    rgba(13, 170, 233, 0.22) 0%,
+    rgba(3, 37, 225, 0.1) 45%,
+    rgba(6, 15, 38, 0) 72%
+  );
+}
+.webgl-banner__content {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 176px 24px 64px;
+}
+.webgl-banner__headline {
+  font-size: clamp(2.1rem, 5.4vw, 4.1rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  margin: 0 0 22px;
+  background: linear-gradient(180deg, #ffffff 0%, #aab4cc 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  opacity: 0;
+  animation: webglBannerFadeUp 0.8s ease 0.45s forwards;
+}
+.webgl-banner__subtext {
+  max-width: 620px;
+  margin: 0 0 40px;
+  color: #aab4cc;
+  font-size: clamp(0.95rem, 1.4vw, 1.08rem);
+  line-height: 1.65;
+  opacity: 0;
+  animation: webglBannerFadeUp 0.8s ease 0.65s forwards;
+}
+.webgl-banner__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  margin-bottom: 56px;
+  opacity: 0;
+  animation: webglBannerFadeUp 0.8s ease 0.85s forwards;
+}
+.webgl-banner__ghost-link {
+  display: inline-flex;
+}
+.webgl-banner__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  justify-content: center;
+  opacity: 0;
+  animation: webglBannerFadeUp 0.8s ease 1.05s forwards;
+}
+.webgl-banner__stat {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  text-align: left;
+}
+.webgl-banner__stat-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(13, 170, 233, 0.12);
+  color: #0daae9;
+}
+.webgl-banner__stat b {
+  display: block;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #fff;
+}
+.webgl-banner__stat span span {
+  display: block;
+  font-size: 12.5px;
+  color: #8792ad;
+  margin-top: 1px;
+}
+
+@keyframes webglBannerFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .webgl-banner__headline,
+  .webgl-banner__subtext,
+  .webgl-banner__buttons,
+  .webgl-banner__stats {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .webgl-banner__content {
+    padding-top: 128px;
+  }
+  .webgl-banner__buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

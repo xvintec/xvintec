@@ -3,7 +3,6 @@
 import { useRef } from "react";
 
 import AssessmentCTA from "@/components/HomePage2/AssessmentCTA/AssessmentCTA";
-import Banner from "@/components/HomePage2/Banner/Banner";
 import CaseStudies from "@/components/HomePage2/CaseStudies/CaseStudies";
 import ContactInfo from "@/components/HomePage2/ContactInfo/ContactInfo";
 import CoreFunctions from "@/components/HomePage2/CoreFunctions/CoreFunctions";
@@ -17,6 +16,7 @@ import StatsCounter from "@/components/HomePage2/StatsCounter/StatsCounter";
 import Testimonials2 from "@/components/HomePage2/Testimonials2/Testimonials2";
 import TrustedByEnterprises from "@/components/HomePage2/TrustedByEnterprises/TrustedByEnterprises";
 import ValueProps from "@/components/HomePage2/ValueProps/ValueProps";
+import WebGLBanner from "@/components/HomePage2/WebGLBanner/WebGLBanner";
 import ReadyToGetStarted from "@/components/HomePage/ReadyToGetStarted/ReadyToGetStarted";
 
 export default function HomeV2() {
@@ -25,7 +25,7 @@ export default function HomeV2() {
   return (
     <div id="rootElement" ref={rootElementRef}>
       <GradientDefs />
-      <Banner rootElementRef={rootElementRef} />
+      <WebGLBanner rootElementRef={rootElementRef} />
       <StatsCounter />
       <ValueProps />
       <ServiceGrid />
