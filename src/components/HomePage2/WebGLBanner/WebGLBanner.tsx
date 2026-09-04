@@ -5,7 +5,7 @@ import React from "react";
 import dynamic from "next/dynamic";
 import { Clock, ShieldCheck, TrendingUp } from "lucide-react";
 
-import SmokyButton from "@/components/Common/SmokyButton/SmokyButton";
+import ShinyButton from "@/components/ui/shiny-button";
 
 import ParticleNetwork from "./ParticleNetwork";
 
@@ -63,13 +63,13 @@ const WebGLBanner = ({ rootElementRef }: any) => {
         </p>
 
         <div className="webgl-banner__buttons">
-          <SmokyButton variant="primary" onClick={() => setIsPopupOpen(true)}>
+          <ShinyButton variant="primary" onClick={() => setIsPopupOpen(true)}>
             Book a free consultation
-          </SmokyButton>
+          </ShinyButton>
           <a href="#case-studies" className="webgl-banner__ghost-link">
-            <SmokyButton variant="ghost">
+            <ShinyButton variant="ghost">
               See how we&apos;ve transformed firms
-            </SmokyButton>
+            </ShinyButton>
           </a>
         </div>
 

@@ -191,104 +191,239 @@ span.swiper-pagination-bullet.swiper-pagination-bullet-active {
   content: "...";
 }
 
-/* Smoky buttons (WebGL smoke-shader hover, ported from hero-section.html).
-   Kept in globals.css rather than styled-jsx so the rules ship in the
-   render-blocking stylesheet — a styled-jsx <style> tag only lands after
-   hydration, which flashed unstyled buttons on a hard reload. */
-.smoky-btn {
-  position: relative;
+/* Shiny CTA buttons — animated conic-gradient shine border, dot pattern, and
+   inner shimmer/breathe glow. Replaces the earlier WebGL smoke-shader button
+   effect above; this is the standard button effect going forward. Brand
+   colors are supplied per variant through custom properties so one rule set
+   drives every button. Lives in globals.css rather than styled-jsx so the
+   rules ship in the render-blocking stylesheet — a styled-jsx <style> tag
+   only lands after hydration, which flashed unstyled buttons on a hard
+   reload (see the note on .webgl-banner below). */
+@property --gradient-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+@property --gradient-angle-offset {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+@property --gradient-percent {
+  syntax: "<percentage>";
+  initial-value: 5%;
+  inherits: false;
+}
+@property --gradient-shine {
+  syntax: "<color>";
+  initial-value: white;
+  inherits: false;
+}
+
+.shiny-cta {
+  --shiny-cta-bg: #0325e1;
+  --shiny-cta-fill-image: linear-gradient(var(--shiny-cta-bg), var(--shiny-cta-bg));
+  --shiny-cta-bg-subtle: #0325e1;
+  --shiny-cta-fg: #ffffff;
+  --shiny-cta-dot: #ffffff;
+  --shiny-cta-highlight: #0daae9;
+  --shiny-cta-highlight-subtle: #b5e0fd;
+  --animation: gradient-angle linear infinite;
+  --duration: 3s;
+  --shadow-size: 2px;
+  --transition: 800ms cubic-bezier(0.25, 1, 0.5, 1);
+
   isolation: isolate;
-  display: inline-flex;
-  border-radius: 999px;
-  border: none;
-  padding: 0;
-  cursor: pointer;
+  position: relative;
   overflow: hidden;
+  cursor: pointer;
+  outline-offset: 4px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 14px 28px;
+  font-weight: 600;
+  font-size: 14.5px;
+  line-height: 1.2;
+  white-space: nowrap;
+  color: var(--shiny-cta-fg);
+  background: var(--shiny-cta-fill-image) padding-box,
+    conic-gradient(
+      from calc(var(--gradient-angle) - var(--gradient-angle-offset)),
+      transparent,
+      var(--shiny-cta-highlight) var(--gradient-percent),
+      var(--gradient-shine) calc(var(--gradient-percent) * 2),
+      var(--shiny-cta-highlight) calc(var(--gradient-percent) * 3),
+      transparent calc(var(--gradient-percent) * 4)
+    ) border-box;
+  box-shadow: inset 0 0 0 1px var(--shiny-cta-bg-subtle);
+  transition: var(--transition);
+  transition-property: --gradient-angle-offset, --gradient-percent, --gradient-shine;
   -webkit-tap-highlight-color: transparent;
 }
-.smoky-btn .smoky-btn__canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  transition: opacity 0.55s ease;
+
+.shiny-cta::before,
+.shiny-cta::after,
+.shiny-cta .shiny-cta__content::before {
+  content: "";
   pointer-events: none;
+  position: absolute;
+  inset-inline-start: 50%;
+  inset-block-start: 50%;
+  translate: -50% -50%;
+  z-index: -1;
 }
-.smoky-btn:hover .smoky-btn__canvas,
-.smoky-btn:focus-visible .smoky-btn__canvas {
-  opacity: 1;
+
+.shiny-cta:active {
+  translate: 0 1px;
 }
-.smoky-btn .smoky-btn__content {
+
+/* Dots pattern */
+.shiny-cta::before {
+  --size: calc(100% - var(--shadow-size) * 3);
+  --position: 2px;
+  --space: calc(var(--position) * 2);
+  width: var(--size);
+  height: var(--size);
+  background: radial-gradient(
+    circle at var(--position) var(--position),
+    var(--shiny-cta-dot) calc(var(--position) / 4),
+    transparent 0
+  ) padding-box;
+  background-size: var(--space) var(--space);
+  background-repeat: space;
+  mask-image: conic-gradient(
+    from calc(var(--gradient-angle) + 45deg),
+    black,
+    transparent 10% 90%,
+    black
+  );
+  border-radius: inherit;
+  opacity: 0.4;
+}
+
+/* Inner shimmer */
+.shiny-cta::after {
+  --animation: shimmer linear infinite;
+  width: 100%;
+  aspect-ratio: 1;
+  background: linear-gradient(-50deg, transparent, var(--shiny-cta-highlight), transparent);
+  mask-image: radial-gradient(circle at bottom, transparent 40%, black);
+  opacity: 0.6;
+}
+
+.shiny-cta .shiny-cta__content {
   position: relative;
   z-index: 1;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 14px 28px;
-  font-weight: 600;
-  font-size: 14.5px;
-  white-space: nowrap;
-  transition: color 0.45s ease, text-shadow 0.45s ease;
 }
-.smoky-btn .smoky-btn__icon {
+
+.shiny-cta .shiny-cta__content::before {
+  --size: calc(100% + 1rem);
+  width: var(--size);
+  height: var(--size);
+  box-shadow: inset 0 -1ex 2rem 4px var(--shiny-cta-highlight);
+  opacity: 0;
+  transition: opacity var(--transition);
+  animation: calc(var(--duration) * 1.5) breathe linear infinite;
+}
+
+.shiny-cta .shiny-cta__icon {
   width: 15px;
   height: 15px;
   flex-shrink: 0;
   transition: transform 0.35s ease;
 }
-.smoky-btn:hover .smoky-btn__icon {
+.shiny-cta:hover .shiny-cta__icon {
   transform: translateX(3px);
 }
 
-.smoky-btn--primary {
-  background: linear-gradient(105deg, #0daae9 0%, #0325e1 100%);
-}
-.smoky-btn--primary .smoky-btn__content {
-  color: #fff;
-}
-.smoky-btn--primary:hover .smoky-btn__content {
-  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
+/* Animate */
+.shiny-cta,
+.shiny-cta::before,
+.shiny-cta::after {
+  animation: var(--animation) var(--duration), var(--animation) calc(var(--duration) / 0.4) reverse paused;
+  animation-composition: add;
 }
 
-.smoky-btn--ghost {
-  background: transparent;
-  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.35);
-}
-.smoky-btn--ghost .smoky-btn__content {
-  color: #fff;
-}
-.smoky-btn--ghost:hover {
-  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.6);
-}
-.smoky-btn--ghost:hover .smoky-btn__content {
-  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+.shiny-cta:is(:hover, :focus-visible) {
+  --gradient-percent: 20%;
+  --gradient-angle-offset: 95deg;
+  --gradient-shine: var(--shiny-cta-highlight-subtle);
 }
 
-.smoky-btn--white {
-  background: #fff;
+.shiny-cta:is(:hover, :focus-visible),
+.shiny-cta:is(:hover, :focus-visible)::before,
+.shiny-cta:is(:hover, :focus-visible)::after {
+  animation-play-state: running;
 }
-.smoky-btn--white .smoky-btn__content {
-  color: #0a1b3d;
+
+.shiny-cta:is(:hover, :focus-visible) .shiny-cta__content::before {
+  opacity: 1;
+}
+
+@keyframes gradient-angle {
+  to {
+    --gradient-angle: 360deg;
+  }
+}
+
+@keyframes shimmer {
+  to {
+    rotate: 360deg;
+  }
+}
+
+@keyframes breathe {
+  from,
+  to {
+    scale: 1;
+  }
+  50% {
+    scale: 1.2;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shiny-cta,
+  .shiny-cta::before,
+  .shiny-cta::after,
+  .shiny-cta .shiny-cta__content::before {
+    animation: none !important;
+  }
+}
+
+/* Brand colors per variant — same three brand colors used across the site,
+   just recombined per button treatment. Only the white variant gets a
+   different foreground/highlight since it sits on a light fill. */
+.shiny-cta--primary {
+  --shiny-cta-fill-image: linear-gradient(105deg, #0daae9 0%, #0325e1 100%);
+  --shiny-cta-bg-subtle: #0325e1;
+  --shiny-cta-fg: #ffffff;
+  --shiny-cta-dot: #ffffff;
+  --shiny-cta-highlight: #0daae9;
+  --shiny-cta-highlight-subtle: #b5e0fd;
+}
+
+.shiny-cta--ghost {
+  --shiny-cta-bg: transparent;
+  --shiny-cta-bg-subtle: rgba(255, 255, 255, 0.35);
+  --shiny-cta-fg: #ffffff;
+  --shiny-cta-dot: #ffffff;
+  --shiny-cta-highlight: #0daae9;
+  --shiny-cta-highlight-subtle: #b5e0fd;
+}
+
+.shiny-cta--white {
+  --shiny-cta-bg: #ffffff;
+  --shiny-cta-bg-subtle: #d7e3f5;
+  --shiny-cta-fg: #0a1b3d;
+  --shiny-cta-dot: #0325e1;
+  --shiny-cta-highlight: #0325e1;
+  --shiny-cta-highlight-subtle: #0daae9;
   padding: 11px 22px;
   font-size: 13.5px;
-}
-.smoky-btn--white:hover .smoky-btn__content {
-  color: #fff;
-  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.55);
-}
-
-.smoky-btn.no-motion .smoky-btn__canvas {
-  display: none;
-}
-.smoky-btn.no-motion.smoky-btn--white:hover {
-  background: #0325e1;
-}
-.smoky-btn.no-motion.smoky-btn--ghost:hover {
-  background: rgba(255, 255, 255, 0.12);
-}
-.smoky-btn.no-motion.smoky-btn--primary:hover {
-  filter: brightness(1.12);
 }
 
 /* WebGL hero banner (Aether Flow particle layout, ported from
