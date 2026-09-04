@@ -281,6 +281,28 @@ span.swiper-pagination-bullet.swiper-pagination-bullet-active {
   transform: translateX(3px);
 }
 
+/* Desktop only: the arrow takes up no width until hover, so the button reads
+   at its text-only width at rest and reveals the arrow on hover instead of
+   showing it permanently. Mobile has no reliable hover, so it keeps the
+   arrow always visible there. */
+@media (min-width: 768px) {
+  .shiny-cta .shiny-cta__content {
+    gap: 0;
+  }
+  .shiny-cta .shiny-cta__icon {
+    width: 0;
+    opacity: 0;
+    transition: width 0.3s ease, opacity 0.3s ease, transform 0.35s ease;
+  }
+  .shiny-cta:is(:hover, :focus-visible) .shiny-cta__content {
+    gap: 8px;
+  }
+  .shiny-cta:is(:hover, :focus-visible) .shiny-cta__icon {
+    width: 15px;
+    opacity: 1;
+  }
+}
+
 /* Animate */
 .shiny-cta {
   animation: var(--animation) var(--duration), var(--animation) calc(var(--duration) / 0.4) reverse paused;
