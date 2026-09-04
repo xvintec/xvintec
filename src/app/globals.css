@@ -191,14 +191,14 @@ span.swiper-pagination-bullet.swiper-pagination-bullet-active {
   content: "...";
 }
 
-/* Shiny CTA buttons — animated conic-gradient shine border, dot pattern, and
-   inner shimmer/breathe glow. Replaces the earlier WebGL smoke-shader button
-   effect above; this is the standard button effect going forward. Brand
-   colors are supplied per variant through custom properties so one rule set
-   drives every button. Lives in globals.css rather than styled-jsx so the
-   rules ship in the render-blocking stylesheet — a styled-jsx <style> tag
-   only lands after hydration, which flashed unstyled buttons on a hard
-   reload (see the note on .webgl-banner below). */
+/* Shiny CTA buttons — an animated conic-gradient shine ring around the
+   border. Replaces the earlier WebGL smoke-shader button effect above; this
+   is the standard button effect going forward. Brand colors are supplied per
+   variant through custom properties so one rule set drives every button.
+   Lives in globals.css rather than styled-jsx so the rules ship in the
+   render-blocking stylesheet — a styled-jsx <style> tag only lands after
+   hydration, which flashed unstyled buttons on a hard reload (see the note
+   on .webgl-banner below). */
 @property --gradient-angle {
   syntax: "<angle>";
   initial-value: 0deg;
@@ -259,16 +259,6 @@ span.swiper-pagination-bullet.swiper-pagination-bullet-active {
   -webkit-tap-highlight-color: transparent;
 }
 
-.shiny-cta .shiny-cta__content::before {
-  content: "";
-  pointer-events: none;
-  position: absolute;
-  inset-inline-start: 50%;
-  inset-block-start: 50%;
-  translate: -50% -50%;
-  z-index: -1;
-}
-
 .shiny-cta:active {
   translate: 0 1px;
 }
@@ -279,20 +269,6 @@ span.swiper-pagination-bullet.swiper-pagination-bullet-active {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-}
-
-.shiny-cta .shiny-cta__content::before {
-  --size: calc(100% + 1rem);
-  width: var(--size);
-  height: var(--size);
-  /* Without a radius this box-shadow renders as a sharp-cornered rectangle
-     sized to the text — visible as a stray "rectangle box" the moment
-     opacity flips to 1 on hover, instead of a soft round glow. */
-  border-radius: 999px;
-  box-shadow: inset 0 -1ex 2rem 4px var(--shiny-cta-highlight);
-  opacity: 0;
-  transition: opacity var(--transition);
-  animation: calc(var(--duration) * 1.5) breathe linear infinite;
 }
 
 .shiny-cta .shiny-cta__icon {
@@ -321,10 +297,6 @@ span.swiper-pagination-bullet.swiper-pagination-bullet-active {
   animation-play-state: running;
 }
 
-.shiny-cta:is(:hover, :focus-visible) .shiny-cta__content::before {
-  opacity: 1;
-}
-
 /* Own focus ring, since it needs to follow the pill's border-radius —
    the browser's default outline draws as a plain rectangle regardless of
    border-radius, which is the stray "rectangle box" this replaces. */
@@ -338,20 +310,9 @@ span.swiper-pagination-bullet.swiper-pagination-bullet-active {
   }
 }
 
-@keyframes breathe {
-  from,
-  to {
-    scale: 1;
-  }
-  50% {
-    scale: 1.2;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .shiny-cta,
-  .shiny-cta--ghost::before,
-  .shiny-cta .shiny-cta__content::before {
+  .shiny-cta--ghost::before {
     animation: none !important;
   }
 }
