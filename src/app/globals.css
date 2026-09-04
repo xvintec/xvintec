@@ -225,19 +225,17 @@ span.swiper-pagination-bullet.swiper-pagination-bullet-active {
   --shiny-cta-fill-image: linear-gradient(var(--shiny-cta-bg), var(--shiny-cta-bg));
   --shiny-cta-bg-subtle: #0325e1;
   --shiny-cta-fg: #ffffff;
-  --shiny-cta-dot: #ffffff;
   --shiny-cta-highlight: #0daae9;
   --shiny-cta-highlight-subtle: #b5e0fd;
   --animation: gradient-angle linear infinite;
   --duration: 3s;
-  --shadow-size: 2px;
   --transition: 800ms cubic-bezier(0.25, 1, 0.5, 1);
 
   isolation: isolate;
   position: relative;
   overflow: hidden;
   cursor: pointer;
-  outline-offset: 4px;
+  outline: none;
   border: 1px solid transparent;
   border-radius: 999px;
   padding: 14px 28px;
@@ -261,8 +259,6 @@ span.swiper-pagination-bullet.swiper-pagination-bullet-active {
   -webkit-tap-highlight-color: transparent;
 }
 
-.shiny-cta::before,
-.shiny-cta::after,
 .shiny-cta .shiny-cta__content::before {
   content: "";
   pointer-events: none;
@@ -275,40 +271,6 @@ span.swiper-pagination-bullet.swiper-pagination-bullet-active {
 
 .shiny-cta:active {
   translate: 0 1px;
-}
-
-/* Dots pattern */
-.shiny-cta::before {
-  --size: calc(100% - var(--shadow-size) * 3);
-  --position: 2px;
-  --space: calc(var(--position) * 2);
-  width: var(--size);
-  height: var(--size);
-  background: radial-gradient(
-    circle at var(--position) var(--position),
-    var(--shiny-cta-dot) calc(var(--position) / 4),
-    transparent 0
-  ) padding-box;
-  background-size: var(--space) var(--space);
-  background-repeat: space;
-  mask-image: conic-gradient(
-    from calc(var(--gradient-angle) + 45deg),
-    black,
-    transparent 10% 90%,
-    black
-  );
-  border-radius: inherit;
-  opacity: 0.4;
-}
-
-/* Inner shimmer */
-.shiny-cta::after {
-  --animation: shimmer linear infinite;
-  width: 100%;
-  aspect-ratio: 1;
-  background: linear-gradient(-50deg, transparent, var(--shiny-cta-highlight), transparent);
-  mask-image: radial-gradient(circle at bottom, transparent 40%, black);
-  opacity: 0.6;
 }
 
 .shiny-cta .shiny-cta__content {
@@ -340,9 +302,7 @@ span.swiper-pagination-bullet.swiper-pagination-bullet-active {
 }
 
 /* Animate */
-.shiny-cta,
-.shiny-cta::before,
-.shiny-cta::after {
+.shiny-cta {
   animation: var(--animation) var(--duration), var(--animation) calc(var(--duration) / 0.4) reverse paused;
   animation-composition: add;
 }
@@ -353,9 +313,7 @@ span.swiper-pagination-bullet.swiper-pagination-bullet-active {
   --gradient-shine: var(--shiny-cta-highlight-subtle);
 }
 
-.shiny-cta:is(:hover, :focus-visible),
-.shiny-cta:is(:hover, :focus-visible)::before,
-.shiny-cta:is(:hover, :focus-visible)::after {
+.shiny-cta:is(:hover, :focus-visible) {
   animation-play-state: running;
 }
 
@@ -363,15 +321,16 @@ span.swiper-pagination-bullet.swiper-pagination-bullet-active {
   opacity: 1;
 }
 
+/* Own focus ring, since it needs to follow the pill's border-radius —
+   the browser's default outline draws as a plain rectangle regardless of
+   border-radius, which is the stray "rectangle box" this replaces. */
+.shiny-cta:focus-visible {
+  box-shadow: inset 0 0 0 1px var(--shiny-cta-bg-subtle), 0 0 0 3px var(--shiny-cta-highlight-subtle);
+}
+
 @keyframes gradient-angle {
   to {
     --gradient-angle: 360deg;
-  }
-}
-
-@keyframes shimmer {
-  to {
-    rotate: 360deg;
   }
 }
 
@@ -387,8 +346,7 @@ span.swiper-pagination-bullet.swiper-pagination-bullet-active {
 
 @media (prefers-reduced-motion: reduce) {
   .shiny-cta,
-  .shiny-cta::before,
-  .shiny-cta::after,
+  .shiny-cta--ghost::before,
   .shiny-cta .shiny-cta__content::before {
     animation: none !important;
   }
@@ -401,25 +359,64 @@ span.swiper-pagination-bullet.swiper-pagination-bullet-active {
   --shiny-cta-fill-image: linear-gradient(105deg, #0daae9 0%, #0325e1 100%);
   --shiny-cta-bg-subtle: #0325e1;
   --shiny-cta-fg: #ffffff;
-  --shiny-cta-dot: #ffffff;
   --shiny-cta-highlight: #0daae9;
   --shiny-cta-highlight-subtle: #b5e0fd;
 }
 
+/* Ghost has a genuinely transparent face (the hero shows through), so the
+   two-layer padding-box/border-box trick the other variants use doesn't
+   work here — there's nothing opaque in the middle to occlude the
+   border-box conic-gradient, so it washes across the whole face instead of
+   staying a thin ring. Paint the conic-gradient on its own pseudo-element
+   (so it can't mask the real text) and cut out everything but the border
+   band with mask-composite instead. */
 .shiny-cta--ghost {
-  --shiny-cta-bg: transparent;
   --shiny-cta-bg-subtle: rgba(255, 255, 255, 0.35);
   --shiny-cta-fg: #ffffff;
-  --shiny-cta-dot: #ffffff;
   --shiny-cta-highlight: #0daae9;
   --shiny-cta-highlight-subtle: #b5e0fd;
+  background: none;
+}
+
+.shiny-cta--ghost::before {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  padding: 1px;
+  box-sizing: border-box;
+  border-radius: inherit;
+  background: conic-gradient(
+    from calc(var(--gradient-angle) - var(--gradient-angle-offset)),
+    transparent,
+    var(--shiny-cta-highlight) var(--gradient-percent),
+    var(--gradient-shine) calc(var(--gradient-percent) * 2),
+    var(--shiny-cta-highlight) calc(var(--gradient-percent) * 3),
+    transparent calc(var(--gradient-percent) * 4)
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  animation: var(--animation) var(--duration), var(--animation) calc(var(--duration) / 0.4) reverse paused;
+  animation-composition: add;
+}
+
+/* --gradient-angle/-percent/-offset/-shine are registered non-inherited
+   (@property above), so the pseudo needs its own hover override and its own
+   running animation — it won't pick either up from .shiny-cta:hover. */
+.shiny-cta--ghost:is(:hover, :focus-visible)::before {
+  --gradient-percent: 20%;
+  --gradient-angle-offset: 95deg;
+  --gradient-shine: var(--shiny-cta-highlight-subtle);
+  animation-play-state: running;
 }
 
 .shiny-cta--white {
   --shiny-cta-bg: #ffffff;
   --shiny-cta-bg-subtle: #d7e3f5;
   --shiny-cta-fg: #0a1b3d;
-  --shiny-cta-dot: #0325e1;
   --shiny-cta-highlight: #0325e1;
   --shiny-cta-highlight-subtle: #0daae9;
   padding: 11px 22px;
