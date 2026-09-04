@@ -285,6 +285,10 @@ span.swiper-pagination-bullet.swiper-pagination-bullet-active {
   --size: calc(100% + 1rem);
   width: var(--size);
   height: var(--size);
+  /* Without a radius this box-shadow renders as a sharp-cornered rectangle
+     sized to the text — visible as a stray "rectangle box" the moment
+     opacity flips to 1 on hover, instead of a soft round glow. */
+  border-radius: 999px;
   box-shadow: inset 0 -1ex 2rem 4px var(--shiny-cta-highlight);
   opacity: 0;
   transition: opacity var(--transition);
