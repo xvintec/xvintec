@@ -23,39 +23,42 @@ export interface CircularCarouselProps {
   className?: string;
 }
 
+type Breakpoint = "mobile" | "tablet" | "desktop";
+
 const VISIBLE_COUNT = 5;
 // Framer Motion writes x/y straight to the inline `transform` style, which
 // overrides (rather than composes with) a Tailwind `-translate-x/y-1/2`
 // class on the same element — so the usual "left-1/2 -translate-x-1/2"
 // centering trick silently loses its translate half once Motion takes over.
 // Baking the half-size offset into x/y themselves avoids the conflict.
-const CARD_WIDTH = 240;
-const CARD_HEIGHT = 160;
+const CARD_WIDTH = 320;
+const CARD_HEIGHT = 260;
+const TOP_MARGIN = 16;
 
-// The arc has to shrink on narrow viewports — the fixed desktop radius pushed
-// the side cards off past the section edge and blew out the whole page's
-// width on mobile.
-const RADII = {
-  mobile: { x: 110, y: 60 },
-  tablet: { x: 170, y: 85 },
-  desktop: { x: 250, y: 110 },
+// The fanned arc is a desktop/tablet-only effect. Phones have no reliable
+// hover and not enough width for peripheral cards to peek without either
+// getting clipped or showing unreadable fragments of text — so mobile gets
+// a plain one-card-at-a-time slider instead of the 3D fan.
+const RADII: Record<Exclude<Breakpoint, "mobile">, { x: number; y: number }> = {
+  tablet: { x: 240, y: 110 },
+  desktop: { x: 380, y: 110 },
 };
 
-function useResponsiveRadius() {
-  const [radius, setRadius] = useState(RADII.desktop);
+function useBreakpoint(): Breakpoint {
+  const [breakpoint, setBreakpoint] = useState<Breakpoint>("desktop");
 
   useEffect(() => {
     function update() {
-      if (window.innerWidth < 480) setRadius(RADII.mobile);
-      else if (window.innerWidth < 768) setRadius(RADII.tablet);
-      else setRadius(RADII.desktop);
+      if (window.innerWidth < 768) setBreakpoint("mobile");
+      else if (window.innerWidth < 1024) setBreakpoint("tablet");
+      else setBreakpoint("desktop");
     }
     update();
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
   }, []);
 
-  return radius;
+  return breakpoint;
 }
 
 function getItemPosition(
@@ -72,11 +75,23 @@ function getItemPosition(
   if (offset > half) adjustedOffset = offset - total;
   if (offset < -half) adjustedOffset = offset + total;
 
-  if (Math.abs(adjustedOffset) > half * 2) return null;
+  // Only the intended VISIBLE_COUNT window (±half around the active card)
+  // should ever render. The original demo checked against `half * 2` here,
+  // which let extra, wrongly-angled cards from further around the wheel
+  // slip through — visible as a stray misplaced card (and a gap where the
+  // real one should be) at certain active indices.
+  if (Math.abs(adjustedOffset) > half) return null;
 
   const angle = (adjustedOffset / VISIBLE_COUNT) * Math.PI;
   const x = Math.sin(angle) * radiusX - CARD_WIDTH / 2;
-  const y = -Math.cos(angle) * radiusY - CARD_HEIGHT / 2;
+  // Anchored from the track's top edge (see TOP_MARGIN/button `top-0` below),
+  // not its vertical center. `-cos(angle)` is always <= 0, so centering the
+  // arc around the box's middle only ever pushes cards UP from there — never
+  // down — which left a real gap: cropped at the top if the box was sized to
+  // avoid it, or a dead zone at the bottom if it wasn't. This formula instead
+  // measures every card's offset from the highest point (the active card, at
+  // angle 0) directly, so the box can be sized to exactly what's used.
+  const y = TOP_MARGIN + radiusY * (1 - Math.cos(angle));
 
   const distance = Math.abs(adjustedOffset);
   const maxDistance = half + 1;
@@ -85,6 +100,22 @@ function getItemPosition(
   const zIndex = VISIBLE_COUNT - distance;
 
   return { x, y, scale, opacity, zIndex, adjustedOffset };
+}
+
+function CardTags({ tags }: { tags?: string[] }) {
+  if (!tags || tags.length === 0) return null;
+  return (
+    <div className="flex flex-wrap gap-1.5">
+      {tags.map((tag, tagIndex) => (
+        <span
+          key={tagIndex}
+          className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-white/70"
+        >
+          {tag}
+        </span>
+      ))}
+    </div>
+  );
 }
 
 export function CircularCarousel({
@@ -96,18 +127,22 @@ export function CircularCarousel({
   className,
 }: CircularCarouselProps) {
   const [internalIndex, setInternalIndex] = useState(0);
+  const [direction, setDirection] = useState(1);
   const [isHovered, setIsHovered] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const radius = useResponsiveRadius();
+  const breakpoint = useBreakpoint();
+  const radius = RADII[breakpoint === "mobile" ? "tablet" : breakpoint];
 
   const activeIndex = controlledIndex ?? internalIndex;
   const total = items.length;
+  const activeItem = items[activeIndex];
 
   const goTo = useCallback(
-    (index: number) => {
+    (index: number, dir: 1 | -1 = 1) => {
       const newIndex = ((index % total) + total) % total;
+      setDirection(dir);
       if (controlledIndex === undefined) {
         setInternalIndex(newIndex);
       }
@@ -116,8 +151,8 @@ export function CircularCarousel({
     [total, controlledIndex, onActiveChange]
   );
 
-  const next = useCallback(() => goTo(activeIndex + 1), [activeIndex, goTo]);
-  const prev = useCallback(() => goTo(activeIndex - 1), [activeIndex, goTo]);
+  const next = useCallback(() => goTo(activeIndex + 1, 1), [activeIndex, goTo]);
+  const prev = useCallback(() => goTo(activeIndex - 1, -1), [activeIndex, goTo]);
 
   useEffect(() => {
     if (!autoPlay || isHovered || isFocused) return;
@@ -137,7 +172,7 @@ export function CircularCarousel({
     return () => el?.removeEventListener("keydown", handler);
   }, [next, prev]);
 
-  const activeItem = items[activeIndex];
+  const isMobile = breakpoint === "mobile";
 
   return (
     <div
@@ -151,99 +186,116 @@ export function CircularCarousel({
       onFocus={() => setIsFocused(true)}
       onBlur={() => setIsFocused(false)}
       className={cn(
-        "relative flex flex-col items-center justify-center gap-8 outline-none",
+        "relative flex flex-col items-center justify-center gap-4 outline-none",
         className
       )}
     >
-      {/* Circular track */}
-      <div className="relative h-[320px] w-full max-w-2xl overflow-hidden">
-        <AnimatePresence mode="popLayout">
-          {items.map((item, i) => {
-            const pos = getItemPosition(i, activeIndex, total, radius.x, radius.y);
-            if (!pos) return null;
+      {isMobile ? (
+        /* Phones: a plain one-card slider, no fanned peripheral cards —
+           there isn't room to peek at neighbors without either clipping
+           them or showing unreadable fragments of text. */
+        <div className="relative h-[300px] w-full max-w-sm overflow-hidden">
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={activeItem.id}
+              initial={{ opacity: 0, x: direction > 0 ? 40 : -40 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: direction > 0 ? -40 : 40 }}
+              transition={{ duration: 0.35, ease: "easeOut" }}
+              className="absolute inset-0 flex flex-col items-start justify-start gap-3 rounded-2xl border border-white/10 bg-gradient-to-b from-[#0A1B3D]/90 to-[#060F26]/95 p-6"
+            >
+              <CardTags tags={activeItem.tags} />
+              <div className="w-full">
+                <h3 className="text-lg font-semibold leading-tight text-white">
+                  {activeItem.title}
+                </h3>
+                <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-white/60">
+                  {activeItem.description}
+                </p>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      ) : (
+        /* Tablet/desktop: the fanned circular track. */
+        <div className="relative h-[380px] w-full max-w-6xl overflow-hidden">
+          <AnimatePresence mode="popLayout">
+            {items.map((item, i) => {
+              const pos = getItemPosition(i, activeIndex, total, radius.x, radius.y);
+              if (!pos) return null;
 
-            const isActive = i === activeIndex;
+              const isActive = i === activeIndex;
 
-            return (
-              <motion.button
-                key={item.id}
-                layout
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{
-                  x: pos.x,
-                  y: pos.y,
-                  scale: pos.scale,
-                  opacity: pos.opacity,
-                  zIndex: pos.zIndex,
-                }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{
-                  duration: 0.65,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                onClick={() => goTo(i)}
-                aria-label={item.title}
-                aria-selected={isActive}
-                role="option"
-                className={cn(
-                  "absolute left-1/2 top-1/2 flex h-40 w-60 cursor-pointer flex-col items-start justify-start gap-2 rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.08] to-white/[0.02] p-5 backdrop-blur-sm transition-shadow duration-300",
-                  isActive
-                    ? "shadow-[0_20px_60px_-12px_rgba(3,37,225,0.45)]"
-                    : "shadow-[0_8px_24px_-4px_rgba(0,0,0,0.35)] hover:shadow-[0_12px_32px_-4px_rgba(3,37,225,0.35)]"
-                )}
-                style={{ transformOrigin: "center center" }}
-              >
-                {item.tags && item.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-1">
-                    {item.tags.map((tag, tagIndex) => (
-                      <span
-                        key={tagIndex}
-                        className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-white/70"
-                      >
-                        {tag}
-                      </span>
-                    ))}
+              return (
+                <motion.button
+                  key={item.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{
+                    x: pos.x,
+                    y: pos.y,
+                    scale: pos.scale,
+                    opacity: pos.opacity,
+                    zIndex: pos.zIndex,
+                  }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  transition={{
+                    duration: 0.65,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                  onClick={() => goTo(i, i > activeIndex ? 1 : -1)}
+                  aria-label={item.title}
+                  aria-selected={isActive}
+                  role="option"
+                  className={cn(
+                    "absolute left-1/2 top-0 flex h-[260px] w-80 cursor-pointer flex-col items-start justify-start gap-3 overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-[#0A1B3D]/90 to-[#060F26]/95 p-7 backdrop-blur-sm transition-shadow duration-300",
+                    isActive
+                      ? "shadow-[0_20px_60px_-12px_rgba(3,37,225,0.45)]"
+                      : "shadow-[0_8px_24px_-4px_rgba(0,0,0,0.35)] hover:shadow-[0_12px_32px_-4px_rgba(3,37,225,0.35)]"
+                  )}
+                  style={{ transformOrigin: "center center" }}
+                >
+                  <CardTags tags={item.tags} />
+                  <div className="w-full">
+                    <h3
+                      className={cn(
+                        "font-semibold leading-tight transition-colors duration-300",
+                        isActive ? "text-white text-lg" : "text-white/80 text-base"
+                      )}
+                    >
+                      {item.title}
+                    </h3>
+                    <p
+                      className={cn(
+                        "mt-2 line-clamp-3 text-xs leading-relaxed transition-colors duration-300",
+                        isActive ? "text-white/60" : "text-white/40"
+                      )}
+                    >
+                      {item.description}
+                    </p>
                   </div>
-                )}
-                <div className="w-full">
-                  <h3
-                    className={cn(
-                      "font-semibold leading-tight transition-colors duration-300",
-                      isActive ? "text-white text-base" : "text-white/80 text-sm"
-                    )}
-                  >
-                    {item.title}
-                  </h3>
-                  <p
-                    className={cn(
-                      "mt-1 line-clamp-2 text-xs leading-relaxed transition-colors duration-300",
-                      isActive ? "text-white/60" : "text-white/40"
-                    )}
-                  >
-                    {item.description}
-                  </p>
-                </div>
-              </motion.button>
-            );
-          })}
-        </AnimatePresence>
+                </motion.button>
+              );
+            })}
+          </AnimatePresence>
+        </div>
+      )}
 
-        {/* Center content — sits inside the track itself so it centers
-            against the arc, not the whole component (track + gap + controls). */}
-        <motion.div
-          key={activeItem.id}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, ease: "easeOut" }}
-          className="pointer-events-none absolute inset-0 z-0 flex flex-col items-center justify-center"
-        >
-          <span className="text-5xl font-bold tracking-tight text-white/90">
-            {String(activeIndex + 1).padStart(2, "0")}
-          </span>
-          <span className="mt-1 text-xs text-white/40">
-            of {String(total).padStart(2, "0")}
-          </span>
-        </motion.div>
+      {/* Active item title — crossfades in the space below the track
+          instead of sitting empty. */}
+      <div className="flex h-10 items-center justify-center px-6 text-center">
+        <AnimatePresence mode="wait">
+          <motion.h3
+            key={activeItem.id}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="text-lg font-semibold text-white md:text-xl"
+          >
+            {activeItem.title}
+          </motion.h3>
+        </AnimatePresence>
       </div>
 
       {/* Controls */}
@@ -265,7 +317,7 @@ export function CircularCarousel({
               key={i}
               role="tab"
               aria-selected={i === activeIndex}
-              onClick={() => goTo(i)}
+              onClick={() => goTo(i, i > activeIndex ? 1 : -1)}
               className={cn(
                 "h-1.5 rounded-full transition-all duration-300",
                 i === activeIndex

@@ -87,8 +87,11 @@ const ServiceGrid = () => {
 
   return (
     <div
-      className="mb-20 md:mb-28 py-16 md:py-24"
-      style={{ background: "var(--hero-gradient)" }}
+      className="-mt-20 md:-mt-28 mb-20 md:mb-28 py-16 md:py-24"
+      style={{
+        background:
+          "linear-gradient(135deg, #04070f 0%, #060F26 40%, #0A1B3D 75%, #0d2260 100%)",
+      }}
       ref={sectionRef}
     >
       <div className="fl-container">
@@ -105,11 +108,11 @@ const ServiceGrid = () => {
             technology stack — from hardware to cloud to security.
           </p>
         </div>
-        <div
-          className={isVisible ? "animate-fade-up animate-delay-500" : "opacity-0"}
-        >
-          <CircularCarousel items={serviceCarouselItems} />
-        </div>
+      </div>
+      <div
+        className={`px-3 md:px-8 ${isVisible ? "animate-fade-up animate-delay-500" : "opacity-0"}`}
+      >
+        <CircularCarousel items={serviceCarouselItems} />
       </div>
     </div>
   );
