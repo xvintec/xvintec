@@ -104,8 +104,7 @@ const ServiceGrid = () => {
           <p
             className={`text-gray-400 font-light mt-5 ${isVisible ? "animate-fade-up animate-delay-300" : "opacity-0"}`}
           >
-            Full-Spectrum IT Management. One partner. Every layer of your
-            technology stack — from hardware to cloud to security.
+            Full spectrum IT Management, across support, infrastructure, cybersecurity, cloud, communications, business systems and digital transformation.
           </p>
         </div>
       </div>

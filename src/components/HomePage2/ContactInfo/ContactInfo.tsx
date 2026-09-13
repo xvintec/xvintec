@@ -96,7 +96,7 @@ const ContactInfo = () => {
         <div className="bg-white py-8 px-6 rounded-2xl border border-gray-100">
           <H2Heading>Office Locations</H2Heading>
           <p className="text-p-grey font-normal mt-4">
-            [Xvintec office locations to be added]
+            Based in Kollupitiya. Supporting Businesses Islandwide.
           </p>
         </div>
       </div>

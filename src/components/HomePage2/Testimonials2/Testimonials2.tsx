@@ -84,8 +84,7 @@ const Testimonials2 = () => {
         <p
           className={`text-p-grey font-light mt-5 ${isVisible ? "animate-fade-up animate-delay-300" : "opacity-0"}`}
         >
-          From solo founders to multi-location enterprises — our clients get
-          results that matter.
+          From growing SMEs to operationally complex businesses, Xvintec provides the technology ownership, support and resilience teams need to operate with confidence.
         </p>
       </div>
 

@@ -26,11 +26,12 @@ const guaranteeCards = [
     title: "Flexible Contracts",
     subtitle: "Designed for your peace of mind",
     description:
-      "36-month term with the ability to exit within 6 months if needed. We're confident you'll stay because the results speak for themselves.",
+      "3Predictable pricing and a clearly defined service scope, with agreed flexibility built into the contract.",
     items: [
-      "Lock in stable pricing",
-      "Early exit clause (6 months)",
-      "Predictable monthly costs",
+      "Stable monthly pricing",
+      "Clear service levels and responsibilities",
+      "Early-exit provisions as agreed",
+      "No surprise support charges",
     ],
     featured: false,
     css: "animate-delay-500",
@@ -39,23 +40,26 @@ const guaranteeCards = [
 
 const comparisonColumns = [
   {
-    label: "Traditional IT Hire",
+    label: "IN-HOUSE",
     positive: false,
     items: [
-      "$70k-90k salary per person",
-      "Benefits, equipment costs",
-      "Coverage gaps, vacation time",
-      "Months to find qualified talent",
+      "Recruitment Time",
+      "Salaries and Benefits",
+      "Leave/Coverage gaps",
+      "Multiple Specialist Hires",
+      "Management Overhead"
     ],
   },
   {
     label: "Xvintec",
     positive: true,
     items: [
-      "$40k+ monthly all-inclusive",
-      "Full team, no hidden costs",
-      "24/7 coverage included",
-      "Start immediately",
+      "Multi-skilled IT team",
+      "24/7 Monitoring,",
+      "SLA-based Support",
+      "Specialist Coverage",
+      "Scalable Capacity",
+      "Predictable Monthly Costs."
     ],
   },
   {
@@ -143,7 +147,7 @@ const RiskFreeGuarantee = () => {
       <div
         className={`bg-white py-8 px-6 md:px-10 rounded-2xl border border-gray-100 transition-all duration-300 hover:shadow-xl ${isVisible ? "animate-fade-up animate-delay-700" : "opacity-0"}`}
       >
-        <H2Heading className="mb-6">vs. Hiring Your Own IT Staff</H2Heading>
+        <H2Heading className="mb-6">Xvintec vs. Building an In-House IT Team</H2Heading>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {comparisonColumns.map((column, index) => (
             <div key={index}>

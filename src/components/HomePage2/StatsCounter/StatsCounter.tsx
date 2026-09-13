@@ -17,7 +17,7 @@ const statsData = [
   },
   {
     tag: "Reach",
-    value: "200+",
+    value: "50+",
     label: "Clients Across Industries",
     bg: "#0DA7E9",
   },

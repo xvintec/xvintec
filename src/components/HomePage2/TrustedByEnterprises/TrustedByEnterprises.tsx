@@ -44,9 +44,13 @@ const TrustedByEnterprises = () => {
         <H1Heading
           className={`${isVisible ? "animate-fade-up" : "opacity-0"}`}
         >
-          Trusted by enterprises. Verified by industry leaders. Audited for
-          excellence.
+          Technology We Work With
         </H1Heading>
+         <p
+          className={`text-p-grey font-light mt-5 ${isVisible ? "animate-fade-up animate-delay-300" : "opacity-0"}`}
+        >
+          Enterprise platforms. Proven technologies. Solutions built around your business.
+        </p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5 px-3 md:px-0 gap-y-8 m-auto justify-items-center">
         {trustedPartners.map((partner, index) => (
