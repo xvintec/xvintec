@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useRef } from "react";
+
+import { useRouter } from "next/navigation";
 import { PopupModal, PopupWidget } from "react-calendly";
 
 import Button from "@/components/Common/Button/Button";
@@ -8,6 +10,7 @@ import H1Heading from "@/components/Common/Headings/H1Heading";
 import useIntersectionAnimation from "@/components/Common/UseScrollAnimation/UseScrollAnimation";
 
 const ReadyToGetStarted = ({ rootElementRef }: any) => {
+  const router = useRouter();
   const [sectionRef, isVisible] = useIntersectionAnimation();
   const [isPopupOpen, setIsPopupOpen] = React.useState(false);
 
@@ -37,7 +40,7 @@ const ReadyToGetStarted = ({ rootElementRef }: any) => {
           <Button
             className="mt-7 text-black"
             bgColor="btn-secondary"
-            onClick={() => {}}
+            onClick={() => router.push("/contact-us")}
           >
             Reach out to us
           </Button>

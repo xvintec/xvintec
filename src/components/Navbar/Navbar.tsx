@@ -139,7 +139,7 @@ const Navbar: FC<Props> = ({ NavbarData }) => {
             />
           </div>
           <div className="hidden items-center gap-2 md:flex">
-            <Link href={"/employer"} onClick={handleOpenClick}>
+            <Link href={"/contact-us"} onClick={handleOpenClick}>
               <Button
                 showArrow={false}
                 bgColor={scrolled ? "btn-primary" : "btn-secondary"}
@@ -238,7 +238,7 @@ const Navbar: FC<Props> = ({ NavbarData }) => {
                 {!isServiceMobileMenuOpen ? (
                   <Link
                     onClick={handleMenuOpen}
-                    href={"/employer"}
+                    href={"/contact-us"}
                     className="*:w-full"
                   >
                     <Button showArrow={false}>Reach out to us</Button>
