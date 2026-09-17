@@ -26,7 +26,7 @@ const guaranteeCards = [
     title: "Flexible Contracts",
     subtitle: "Designed for your peace of mind",
     description:
-      "3Predictable pricing and a clearly defined service scope, with agreed flexibility built into the contract.",
+      "Predictable pricing and a clearly defined service scope, with agreed flexibility built into the contract.",
     items: [
       "Stable monthly pricing",
       "Clear service levels and responsibilities",

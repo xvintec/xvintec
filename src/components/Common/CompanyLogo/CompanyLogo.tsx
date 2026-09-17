@@ -19,7 +19,8 @@ const CompanyLogo: React.FC<CompanyLogoType> = ({
         alt={image.alt}
         width={`${size === "large" ? "150" : "93"}`}
         height={`${size === "large" ? "50" : "24"}`}
-        className={imageClassName}
+        className={`select-none [-webkit-user-drag:none] ${imageClassName ?? ""}`}
+        draggable={false}
         priority
       />
     </Link>

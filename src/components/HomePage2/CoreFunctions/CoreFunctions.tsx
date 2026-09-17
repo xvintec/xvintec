@@ -1,21 +1,6 @@
 "use client";
 
-import React, { useRef } from "react";
-
-import {
-  Briefcase,
-  ChevronLeft,
-  ChevronRight,
-  Cpu,
-  Headset,
-  Settings,
-  Wallet,
-} from "lucide-react";
-import "swiper/css";
-import "swiper/css/pagination";
-import { Pagination } from "swiper/modules";
-import { Swiper, SwiperSlide } from "swiper/react";
-import type { Swiper as SwiperType } from "swiper/types";
+import { Briefcase, Cpu, Headset, Settings, Wallet } from "lucide-react";
 
 import H1Heading from "@/components/Common/Headings/H1Heading";
 import useIntersectionAnimation from "@/components/Common/UseScrollAnimation/UseScrollAnimation";
@@ -51,65 +36,32 @@ const coreFunctionsData = [
 
 const CoreFunctions = () => {
   const [sectionRef, isVisible] = useIntersectionAnimation();
-  const swiperRef = useRef<SwiperType | null>(null);
 
   return (
     <div className="fl-container mb-20 md:mb-28" ref={sectionRef}>
       <div
-        className={`flex items-end justify-between mb-16 gap-6 ${isVisible ? "animate-fade-up" : "opacity-0"}`}
+        className={`max-w-2xl mb-16 ${isVisible ? "animate-fade-up" : "opacity-0"}`}
       >
-        <div className="max-w-2xl">
-          <H1Heading>Our Core Functions</H1Heading>
-          <p className="text-p-grey font-light mt-5">
-            Five specialized departments working together to deliver
-            enterprise-grade IT services.
-          </p>
-        </div>
-        <div className="hidden shrink-0 gap-3 md:flex">
-          <button
-            aria-label="Previous"
-            className="swiper-button"
-            onClick={() => swiperRef.current?.slidePrev()}
-          >
-            <ChevronLeft size={20} />
-          </button>
-          <button
-            aria-label="Next"
-            className="swiper-button"
-            onClick={() => swiperRef.current?.slideNext()}
-          >
-            <ChevronRight size={20} />
-          </button>
-        </div>
+        <H1Heading>Our Core Functions</H1Heading>
+        <p className="text-p-grey font-light mt-5">
+          Five specialized departments working together to deliver
+          enterprise-grade IT services.
+        </p>
       </div>
 
-      <Swiper
-        modules={[Pagination]}
-        onBeforeInit={(swiper) => {
-          swiperRef.current = swiper;
-        }}
-        spaceBetween={20}
-        slidesPerView={1.15}
-        slidesOffsetBefore={20}
-        slidesOffsetAfter={20}
-        pagination={{ clickable: true }}
-        breakpoints={{
-          640: { slidesPerView: 2, spaceBetween: 20 },
-          1024: { slidesPerView: 3, spaceBetween: 24 },
-        }}
-        className={`core-swiper ${isVisible ? "animate-fade-up animate-delay-300" : "opacity-0"}`}
+      <div
+        className={`flex flex-wrap justify-center gap-6 ${isVisible ? "animate-fade-up animate-delay-300" : "opacity-0"}`}
       >
         {coreFunctionsData.map((data, index) => (
-          <SwiperSlide key={index} className="!h-auto py-6">
-            <ServiceGridCard
-              icon={data.icon}
-              title={data.title}
-              tags={data.tags}
-              className="h-full max-w-none"
-            />
-          </SwiperSlide>
+          <ServiceGridCard
+            key={index}
+            icon={data.icon}
+            title={data.title}
+            tags={data.tags}
+            className="max-w-none w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]"
+          />
         ))}
-      </Swiper>
+      </div>
     </div>
   );
 };

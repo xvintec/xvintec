@@ -108,8 +108,9 @@ const StackedMenu = ({
           >
             <h3 className="text-lg font-semibold text-h1-black">Services</h3>
             <p className="mt-2 text-[#727272] leading-relaxed">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              From managed support to cloud, security, and compliance — we
+              deliver enterprise-grade IT services tailored to how your
+              business actually runs.
             </p>
             <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-[#0325E1]">
               Learn more
@@ -177,7 +178,7 @@ const StackedMenu = ({
               <p className="min-h-[3rem] text-base font-semibold text-h1-black">
                 {isHoverValue["title"]}
               </p>
-              <p className="mt-1 min-h-[3.6em] pb-4 text-[#727272] max-lines">
+              <p className="mt-1 h-[3.6em] pb-4 text-[#727272] max-lines">
                 {isHoverValue["description"]}
               </p>
               <Link

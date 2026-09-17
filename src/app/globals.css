@@ -81,8 +81,18 @@
   * {
     @apply border-border;
   }
+  html {
+    /* Rubber-band/overscroll bounce (trackpad drag past the top) reveals
+       whatever sits behind the document — match the hero's dark navy so
+       that gap doesn't flash white against the hero. */
+    background-color: #060f26;
+  }
   body {
     @apply bg-background text-foreground;
+  }
+  ::selection {
+    background: #0325e1;
+    color: #ffffff;
   }
 }
 

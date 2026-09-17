@@ -31,8 +31,8 @@ const VISIBLE_COUNT = 5;
 // class on the same element — so the usual "left-1/2 -translate-x-1/2"
 // centering trick silently loses its translate half once Motion takes over.
 // Baking the half-size offset into x/y themselves avoids the conflict.
-const CARD_WIDTH = 320;
-const CARD_HEIGHT = 260;
+const CARD_WIDTH = 360;
+const CARD_HEIGHT = 300;
 const TOP_MARGIN = 16;
 
 // The fanned arc is a desktop/tablet-only effect. Phones have no reliable
@@ -40,8 +40,8 @@ const TOP_MARGIN = 16;
 // getting clipped or showing unreadable fragments of text — so mobile gets
 // a plain one-card-at-a-time slider instead of the 3D fan.
 const RADII: Record<Exclude<Breakpoint, "mobile">, { x: number; y: number }> = {
-  tablet: { x: 240, y: 110 },
-  desktop: { x: 380, y: 110 },
+  tablet: { x: 270, y: 120 },
+  desktop: { x: 420, y: 120 },
 };
 
 function useBreakpoint(): Breakpoint {
@@ -218,7 +218,7 @@ export function CircularCarousel({
         </div>
       ) : (
         /* Tablet/desktop: the fanned circular track. */
-        <div className="relative h-[380px] w-full max-w-6xl overflow-hidden">
+        <div className="relative h-[420px] w-full max-w-6xl overflow-hidden">
           <AnimatePresence mode="popLayout">
             {items.map((item, i) => {
               const pos = getItemPosition(i, activeIndex, total, radius.x, radius.y);
@@ -248,7 +248,7 @@ export function CircularCarousel({
                   aria-selected={isActive}
                   role="option"
                   className={cn(
-                    "absolute left-1/2 top-0 flex h-[260px] w-80 cursor-pointer flex-col items-start justify-start gap-3 overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-[#0A1B3D]/90 to-[#060F26]/95 p-7 backdrop-blur-sm transition-shadow duration-300",
+                    "absolute left-1/2 top-0 flex h-[300px] w-[360px] cursor-pointer flex-col items-start justify-start gap-3 overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-[#0A1B3D]/90 to-[#060F26]/95 p-7 backdrop-blur-sm transition-shadow duration-300",
                     isActive
                       ? "shadow-[0_20px_60px_-12px_rgba(3,37,225,0.45)]"
                       : "shadow-[0_8px_24px_-4px_rgba(0,0,0,0.35)] hover:shadow-[0_12px_32px_-4px_rgba(3,37,225,0.35)]"
@@ -280,23 +280,6 @@ export function CircularCarousel({
           </AnimatePresence>
         </div>
       )}
-
-      {/* Active item title — crossfades in the space below the track
-          instead of sitting empty. */}
-      <div className="flex h-10 items-center justify-center px-6 text-center">
-        <AnimatePresence mode="wait">
-          <motion.h3
-            key={activeItem.id}
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-            className="text-lg font-semibold text-white md:text-xl"
-          >
-            {activeItem.title}
-          </motion.h3>
-        </AnimatePresence>
-      </div>
 
       {/* Controls */}
       <div className="flex items-center gap-4">

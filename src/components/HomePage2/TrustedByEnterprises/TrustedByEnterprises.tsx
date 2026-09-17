@@ -1,38 +1,27 @@
 "use client";
 
-import React from "react";
-
 import Image from "next/image";
 
 import H1Heading from "@/components/Common/Headings/H1Heading";
 import useIntersectionAnimation from "@/components/Common/UseScrollAnimation/UseScrollAnimation";
 
 const trustedPartners = [
-  {
-    name: "Samsung",
-    image: "/partners/Samsung-white.png",
-    description: "Trusted technology & integration partner",
-  },
-  {
-    name: "OpenZeppelin",
-    image: "/partners/Open-white.png",
-    description: "Security-audited infrastructure standards",
-  },
-  {
-    name: "ClickUp",
-    image: "/partners/Clickup-white.png",
-    description: "Workflow & project management integration",
-  },
-  {
-    name: "GitHub",
-    image: "/partners/Github-white.png",
-    description: "Source control & DevOps best practices",
-  },
-  {
-    name: "Segment",
-    image: "/partners/Segment-white.png",
-    description: "Reliable data & analytics integration",
-  },
+  { name: "3CX", image: "/partners/logos/3cx.png" },
+  { name: "Aruba Networks", image: "/partners/logos/aruba-networks.svg" },
+  { name: "AWS", image: "/partners/logos/aws.svg" },
+  { name: "Bitdefender", image: "/partners/logos/bitdefender.svg" },
+  { name: "Cisco", image: "/partners/logos/cisco.svg" },
+  { name: "Cloudflare", image: "/partners/logos/cloudflare.svg" },
+  { name: "CrowdStrike", image: "/partners/logos/crowdstrike.svg" },
+  { name: "Dell", image: "/partners/logos/dell.svg" },
+  { name: "DigitalOcean", image: "/partners/logos/digitalocean.svg" },
+  { name: "Fortinet", image: "/partners/logos/fortinet.svg" },
+  { name: "Lenovo", image: "/partners/logos/lenovo.svg" },
+  { name: "Microsoft", image: "/partners/logos/microsoft.svg" },
+  { name: "Sophos", image: "/partners/logos/sophos.svg" },
+  { name: "Ubiquiti", image: "/partners/logos/ubiquiti.png" },
+  { name: "Veeam", image: "/partners/logos/veeam.svg" },
+  { name: "Zoho", image: "/partners/logos/zoho.svg" },
 ];
 
 const TrustedByEnterprises = () => {
@@ -46,29 +35,26 @@ const TrustedByEnterprises = () => {
         >
           Technology We Work With
         </H1Heading>
-         <p
+        <p
           className={`text-p-grey font-light mt-5 ${isVisible ? "animate-fade-up animate-delay-300" : "opacity-0"}`}
         >
-          Enterprise platforms. Proven technologies. Solutions built around your business.
+          Enterprise platforms. Proven technologies. Solutions built around
+          your business.
         </p>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5 gap-y-8 m-auto justify-items-center">
+      <div className="flex flex-wrap justify-center gap-4">
         {trustedPartners.map((partner, index) => (
           <div
             key={index}
-            className={`max-w-md w-full bg-white py-8 px-6 rounded-2xl text-center border border-gray-100 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${isVisible ? "animate-fade-up animate-delay-300" : "opacity-0"}`}
+            className={`flex h-24 w-[calc(50%-8px)] items-center justify-center rounded-2xl border border-gray-100 bg-white px-6 py-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl sm:w-[calc(33.333%-11px)] md:w-[calc(25%-12px)] lg:w-[calc(16.666%-14px)] ${isVisible ? "animate-fade-up animate-delay-300" : "opacity-0"}`}
           >
             <Image
               src={partner.image}
               alt={partner.name}
               width={120}
               height={40}
-              className="m-auto grayscale hover:grayscale-0 transition-all duration-300 ease-in-out"
-              style={{ objectFit: "contain" }}
+              className="m-auto h-auto max-h-10 w-auto max-w-full grayscale transition-all duration-300 ease-in-out hover:grayscale-0"
             />
-            <p className="text-p-grey font-normal mt-4">
-              {partner.description}
-            </p>
           </div>
         ))}
       </div>

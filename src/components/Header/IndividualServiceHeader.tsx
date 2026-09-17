@@ -38,7 +38,8 @@ const IndividualServiceHeader = ({
             alt=""
             fill
             sizes="(max-width: 768px) 100vw, 64vw"
-            className="object-contain object-right"
+            className="select-none object-contain object-right [-webkit-user-drag:none]"
+            draggable={false}
             priority
           />
         </div>
