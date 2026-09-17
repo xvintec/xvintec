@@ -63,7 +63,7 @@ const AboutUsOurValues = () => {
         the guiding principles that inform everything we do
       </p>
 
-      <div className="flex flex-wrap justify-center gap-6 md:gap-8 px-3 md:px-0">
+      <div className="flex flex-wrap justify-center gap-6 md:gap-8">
         {howWeKnowData.map((data, index) => (
           <div
             key={index}

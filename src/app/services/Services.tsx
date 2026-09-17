@@ -16,8 +16,8 @@ const Services = () => {
     <div id="rootElement" ref={rootElementRef}>
       <IndividualServiceHeader
         title="Services"
-        subTitle="We execute your ideas from start to finish"
-        description="Get your works perfectly from our service for a better time."
+        subTitle="Every IT Service Your Business Needs, Under One Roof"
+        description="From managed support to cloud, security, and compliance — we deliver enterprise-grade IT services tailored to how your business actually runs."
         // Placeholder artwork — swap for a services-specific image later.
         bannerImage="Consulting.png"
         rootElementRef={rootElementRef}

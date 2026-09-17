@@ -78,7 +78,7 @@ const ContactFAQ = () => {
                 }}
               >
                 <div className="overflow-hidden">
-                  <p className="text-p-grey font-normal px-6 pb-6 -mt-2">
+                  <p className="text-p-grey font-normal px-6 pb-6">
                     {faq.answer}
                   </p>
                 </div>

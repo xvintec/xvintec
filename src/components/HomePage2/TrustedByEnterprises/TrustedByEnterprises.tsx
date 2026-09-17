@@ -52,7 +52,7 @@ const TrustedByEnterprises = () => {
           Enterprise platforms. Proven technologies. Solutions built around your business.
         </p>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5 px-3 md:px-0 gap-y-8 m-auto justify-items-center">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5 gap-y-8 m-auto justify-items-center">
         {trustedPartners.map((partner, index) => (
           <div
             key={index}

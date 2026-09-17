@@ -106,7 +106,7 @@ const Navbar: FC<Props> = ({ NavbarData }) => {
         ref={navRef}
         className={`z-40 w-full fixed transition-all duration-300 ease-in-out ring-1 ${scrolled ? "bg-white shadow-lg ring-gray-900/5 py-3" : "bg-transparent ring-transparent py-4"}`}
       >
-        <div className="fl-container flex flex-row items-center justify-between px-4 xl:px-0">
+        <div className="fl-container flex flex-row items-center justify-between">
           <div className="inline-flex items-center" onClick={handleOpenClick}>
             <CompanyLogo
               imageClassName="w-auto h-7 md:h-9"

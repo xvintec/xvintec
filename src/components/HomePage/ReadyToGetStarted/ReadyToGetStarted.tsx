@@ -15,7 +15,7 @@ const ReadyToGetStarted = ({ rootElementRef }: any) => {
   const [isPopupOpen, setIsPopupOpen] = React.useState(false);
 
   return (
-    <div className="mx-5" ref={sectionRef}>
+    <div ref={sectionRef}>
       <div
         className={`fl-container bg-[url('/header/ReadyToBannerMobile.png')] md:bg-[url('/header/ReadyToBanner.png')] bg-cover rounded-3xl py-12 text-center mb-28 shadow-2xl ${isVisible ? " animate-fade-up" : "opacity-0"}`}
         ref={rootElementRef}
@@ -30,7 +30,7 @@ const ReadyToGetStarted = ({ rootElementRef }: any) => {
         </p>
 
         <PopupModal
-          url="https://calendly.com/xvintec/30min?hide_gdpr_banner=1"
+          url="https://calendly.com/xvintec-web/30min?hide_gdpr_banner=1"
           rootElement={rootElementRef.current} // Pass the ref's current value as the rootElement
           onModalClose={() => setIsPopupOpen(false)}
           open={isPopupOpen}

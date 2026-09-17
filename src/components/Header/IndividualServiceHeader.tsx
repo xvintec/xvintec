@@ -70,7 +70,7 @@ const IndividualServiceHeader = ({
 
       <div className="fl-container relative" ref={rootElementRef}>
         <PopupModal
-          url="https://calendly.com/xvintec/30min?hide_gdpr_banner=1"
+          url="https://calendly.com/xvintec-web/30min?hide_gdpr_banner=1"
           rootElement={rootElementRef.current}
           onModalClose={() => setIsPopupOpen(false)}
           open={isPopupOpen}

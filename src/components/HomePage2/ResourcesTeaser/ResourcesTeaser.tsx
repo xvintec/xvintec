@@ -33,7 +33,7 @@ const ResourcesTeaser = () => {
       >
         From the Blog
       </H1Heading>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 px-3 md:px-0 gap-y-8 m-auto justify-items-center">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 gap-y-8 m-auto justify-items-center">
         {resourcesData.map((resource, index) => (
           <div
             key={index}

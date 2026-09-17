@@ -62,7 +62,7 @@ const ValueProps = () => {
             Enterprise-grade IT expertise, delivered as an extension of your business - without the cost and complexity of building a full internal technology team.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 px-3 md:px-0 gap-y-8 m-auto justify-items-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 gap-y-8 m-auto justify-items-center">
           {valuePropsData.map((data, index) => (
             <ValuePropCard
               key={index}

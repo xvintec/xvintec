@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter_Tight } from "next/font/google";
 import Script from "next/script";
 
+import CalendlyBadge from "@/components/CalendlyBadge/CalendlyBadge";
 import Footer from "@/components/Footer/Footer";
 import Navbar from "@/components/Navbar/Navbar";
 import { NavbarData } from "@/data/NavbarData";
@@ -61,6 +62,7 @@ export default function RootLayout({
         <Navbar NavbarData={NavbarData} />
         {children}
         <Footer />
+        <CalendlyBadge />
       </body>
     </html>
   );

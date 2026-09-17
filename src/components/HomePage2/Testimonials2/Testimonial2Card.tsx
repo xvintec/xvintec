@@ -11,6 +11,10 @@ interface Testimonial2CardProps {
   className?: string;
 }
 
+// Temporarily hidden per client request — keep the data/props intact so this
+// can be flipped back on without re-adding content.
+const SHOW_DESIGNATION = false;
+
 const Testimonial2Card = ({
   name,
   role,
@@ -42,12 +46,16 @@ const Testimonial2Card = ({
         <div className="text-[13px] font-medium leading-5 text-[#132128]">
           {name}
         </div>
-        <div className="text-[13px] font-medium leading-5 text-[#424D53]">
-          {industry}
-        </div>
-        <div className="mt-1 text-xs font-normal leading-3 text-[#717A7E]">
-          {role}
-        </div>
+        {SHOW_DESIGNATION && (
+          <>
+            <div className="text-[13px] font-medium leading-5 text-[#424D53]">
+              {industry}
+            </div>
+            <div className="mt-1 text-xs font-normal leading-3 text-[#717A7E]">
+              {role}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

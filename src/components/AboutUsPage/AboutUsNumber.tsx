@@ -26,7 +26,7 @@
 //   return (
 //     <div className={`fl-container mb-20 md:mb-28`} ref={sectionRef}>
 //       <div
-//         className={`grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-5 px-3 md:px-0 gap-y-8 m-auto justify-items-center`}
+//         className={`grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-5 gap-y-8 m-auto justify-items-center`}
 //       >
 //         {numbers.map((number, index) => (
 //           <div

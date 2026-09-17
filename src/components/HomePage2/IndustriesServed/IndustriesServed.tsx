@@ -193,9 +193,6 @@ const IndustriesServed = () => {
               >
                 <div className="overflow-hidden">
                   <div className="px-4 pb-5 pt-1">
-                    <span className="text-2xl font-semibold bg-gradient-to-r from-[#0DA7E9] to-[#0429E2] bg-clip-text text-transparent">
-                      {industry.percentage}%
-                    </span>
                     <div className="w-full h-2 bg-grey-light rounded-full mt-3 mb-4">
                       <div
                         className="h-2 rounded-full bg-gradient-to-r from-[#0DA7E9] to-[#0429E2]"
@@ -253,9 +250,6 @@ const IndustriesServed = () => {
                   </H2Heading>
                 </div>
                 <div className="md:w-1/2">
-                  <span className="text-3xl font-semibold bg-gradient-to-r from-[#0DA7E9] to-[#0429E2] bg-clip-text text-transparent">
-                    {active.percentage}%
-                  </span>
                   <div className="w-full h-2 bg-grey-light rounded-full mt-3 mb-4">
                     <div
                       className="h-2 rounded-full bg-gradient-to-r from-[#0DA7E9] to-[#0429E2] transition-all duration-500"

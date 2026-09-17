@@ -88,7 +88,7 @@
 
 @layer components {
   .fl-container {
-    @apply container mx-auto px-2 sm:px-6 lg:px-6 xl:px-1;
+    @apply container mx-auto px-5;
   }
 
   .swiper-button {
@@ -180,15 +180,13 @@ span.swiper-pagination-bullet.swiper-pagination-bullet-active {
 }
 
 .max-lines {
-  display: block; /* or inline-block */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
   text-overflow: ellipsis;
   word-wrap: break-word;
-  overflow: hidden;
-  max-height: 3.6em;
   line-height: 1.8em;
-}
-.max-lines::after {
-  content: "...";
 }
 
 /* Shiny CTA buttons — an animated conic-gradient shine ring around the
@@ -447,7 +445,7 @@ span.swiper-pagination-bullet.swiper-pagination-bullet-active {
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 176px 24px 64px;
+  padding: 176px 20px 64px;
 }
 .webgl-banner__headline {
   font-size: clamp(2.1rem, 5.4vw, 4.1rem);
@@ -551,4 +549,12 @@ span.swiper-pagination-bullet.swiper-pagination-bullet-active {
     flex-direction: column;
     align-items: stretch;
   }
+}
+
+/* Calendly's default popup has no rounding/clipping on the modal box, so its
+   own "Powered by Calendly" ribbon and footer links can visually spill past
+   the corner instead of sitting inside a clean card. */
+.calendly-overlay .calendly-popup {
+  overflow: hidden;
+  border-radius: 16px;
 }

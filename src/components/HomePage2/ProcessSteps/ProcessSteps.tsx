@@ -49,7 +49,7 @@ const ProcessSteps = () => {
             impact.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 px-3 md:px-0 gap-y-8 m-auto justify-items-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 gap-y-8 m-auto justify-items-center">
           {processStepsData.map((data, index) => (
             <ProcessStepCard
               key={index}
