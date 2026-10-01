@@ -22,7 +22,7 @@ jobs:
           command_timeout: 20m
           script: |
             # 1. Navigate to your specific subfolder
-            cd /var/www/html/xvintec/
+            cd /var/www/html/
             
             # 2. Pull the newest changes from your branch
             git pull origin homepage-v2
