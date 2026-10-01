@@ -1,0 +1,42 @@
+name: Remote Deploy Next.js on Push
+
+on:
+  push:
+    branches:
+      - homepage-v2  # Triggers when you save changes to this branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+
+      - name: Executing remote SSH commands to deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          command_timeout: 20m
+          script: |
+            # 1. Navigate to your specific subfolder
+            cd /var/www/html/xvintec/
+            
+            # 2. Pull the newest changes from your branch
+            git pull origin homepage-v2
+            
+            # 3. Load Node/NVM environment
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            
+            # 4. Install dependencies
+            npm install
+            
+            # 5. Build the production build
+            npm run build
+            
+            # 6. Smoothly reload the production PM2 instance
+            pm2 reload xvintec
+            pm2 save
