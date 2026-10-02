@@ -2,6 +2,10 @@
 
 import React from "react";
 
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
+
 import H1Heading from "@/components/Common/Headings/H1Heading";
 import useIntersectionAnimation from "@/components/Common/UseScrollAnimation/UseScrollAnimation";
 
@@ -66,17 +70,52 @@ const CaseStudies = () => {
           IT results across every sector.
         </p>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 px-3 md:px-0 gap-y-8 m-auto justify-items-center">
-        {caseStudiesData.map((data, index) => (
-          <CaseStudyCard
-            key={index}
-            industry={data.industry}
-            keyResult={data.keyResult}
-            challenge={data.challenge}
-            result={data.result}
-            className={`${isVisible ? `animate-fade-up ${data.css}` : "opacity-0"}`}
-          />
-        ))}
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start">
+        <div
+          className={`lg:sticky lg:top-28 ${isVisible ? "animate-fade" : "opacity-0"}`}
+        >
+          <div
+            className="relative overflow-hidden rounded-3xl min-h-[420px] flex flex-col justify-center p-10 md:p-12"
+            style={{ background: "var(--hero-gradient)" }}
+          >
+            <Image
+              src="/images/bussiness-people-working-team-office.jpg"
+              alt=""
+              fill
+              className="object-cover opacity-20"
+            />
+            <div className="relative">
+              <div className="text-6xl md:text-7xl font-semibold text-white">
+                200+
+              </div>
+              <p className="mt-4 max-w-sm text-white/80 font-light">
+                With measurable outcomes across every sector, Xvintec is the
+                trusted managed IT partner behind the results below.
+              </p>
+              <Link
+                href="#client-stories"
+                className="mt-6 inline-flex items-center gap-1 text-sm font-semibold text-white"
+              >
+                See client stories
+                <ArrowUpRight size={16} />
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-6">
+          {caseStudiesData.map((data, index) => (
+            <CaseStudyCard
+              key={index}
+              industry={data.industry}
+              keyResult={data.keyResult}
+              challenge={data.challenge}
+              result={data.result}
+              className={`${isVisible ? `animate-fade-up ${data.css}` : "opacity-0"}`}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

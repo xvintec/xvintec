@@ -5,6 +5,10 @@ const GradientDefs = () => (
         <stop offset="0%" stopColor="#0DA7E9" />
         <stop offset="100%" stopColor="#0429E2" />
       </linearGradient>
+      <linearGradient id="brand-gradient-light" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stopColor="#7FE3FF" />
+        <stop offset="100%" stopColor="#4C8DFF" />
+      </linearGradient>
     </defs>
   </svg>
 );

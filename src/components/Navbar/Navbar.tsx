@@ -1,10 +1,9 @@
 "use client";
 
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
 
 import { ServicesData } from "@/data/ServicesData";
 import { NavbarType } from "@/types/NavbarTypes";
@@ -22,23 +21,32 @@ type Props = {
 const Navbar: FC<Props> = ({ NavbarData }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [isDark, isDarkSet] = useState(false);
-  const pathname = usePathname();
-
   const [isOpen, setIsOpen] = useState(false);
   const [isServiceMobileMenuOpen, setIsServiceMobileMenuOpen] = useState(false);
+  const [navHeight, setNavHeight] = useState(80);
+
+  const navRef = useRef<HTMLElement>(null);
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const openDropdown = () => {
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+    setIsOpen(true);
+  };
+
+  const closeDropdown = () => {
+    closeTimerRef.current = setTimeout(() => setIsOpen(false), 200);
+  };
 
   const handleOpenClick = () => {
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
     setIsOpen(false);
   };
-
-  const handleOpenHover = () => {
-    setIsOpen(!isOpen);
-  };
-
-  useEffect(() => {
-    pathname != "/services" ? isDarkSet(false) : isDarkSet(true);
-  }, [pathname]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -57,6 +65,23 @@ const Navbar: FC<Props> = ({ NavbarData }) => {
     };
   }, []);
 
+  useEffect(() => {
+    const measure = () => setNavHeight(navRef.current?.offsetHeight ?? 80);
+    measure();
+    const settleTimer = setTimeout(measure, 320);
+    window.addEventListener("resize", measure);
+    return () => {
+      clearTimeout(settleTimer);
+      window.removeEventListener("resize", measure);
+    };
+  }, [scrolled]);
+
+  useEffect(() => {
+    return () => {
+      if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+    };
+  }, []);
+
   const handleMenuOpen = () => {
     setIsMenuOpen(!isMenuOpen);
 
@@ -72,21 +97,24 @@ const Navbar: FC<Props> = ({ NavbarData }) => {
     setIsServiceMobileMenuOpen(!isServiceMobileMenuOpen);
   };
 
+  // Header is transparent over the hero at rest; fills solid white once scrolled.
+  const lightMode = !scrolled;
+
   return (
     <div className="relative z-40 animate-fade">
       <nav
-        className={`z-40 w-full fixed ${!isMenuOpen === true ? "" : "bg-white"} ${scrolled ? "bg-[#F5FBFF] py-4 ring-1 ring-gray-900/5" : `${isOpen ? "bg-[#F5FBFF] py-4" : "bg-transparent py-7"}`} transition-all duration-700 ease-in-out`}
-        onClick={handleOpenClick}
+        ref={navRef}
+        className={`z-40 w-full fixed transition-all duration-300 ease-in-out ring-1 ${scrolled ? "bg-white shadow-lg ring-gray-900/5 py-3" : "bg-transparent ring-transparent py-4"}`}
       >
-        <div className="fl-container flex flex-row items-center justify-between px-4 xl:px-0">
-          <div className="inline-flex items-center">
+        <div className="fl-container flex flex-row items-center justify-between">
+          <div className="inline-flex items-center" onClick={handleOpenClick}>
             <CompanyLogo
-              imageClassName="w-auto h-6 md:h-8"
+              imageClassName="w-auto h-7 md:h-9"
               className="mr-8"
               size={NavbarData.logo.size}
               image={{
-                url: isDark
-                  ? `${scrolled || isOpen || isMenuOpen ? NavbarData.logo.image.url : "/logos/xvintec-logo-white.svg"}`
+                url: lightMode
+                  ? "/logos/xvintec-logo-white.svg"
                   : NavbarData.logo.image.url,
                 alt: NavbarData.logo.image.alt,
               }}
@@ -96,23 +124,28 @@ const Navbar: FC<Props> = ({ NavbarData }) => {
 
           <div className="hidden items-center gap-2 md:flex">
             <StackedMenu
-              isDark={isDark}
-              scrolled={scrolled}
               isOpen={isOpen}
-              onClick={handleOpenHover}
+              onOpen={openDropdown}
+              onClose={closeDropdown}
+              onLinkClick={handleOpenClick}
+              lightMode={lightMode}
+              navHeight={navHeight}
             />
             <Menu
-              isDark={isDark}
-              scrolled={scrolled}
-              isOpen={isOpen}
+              lightMode={lightMode}
               className="hidden md:flex"
               links={NavbarData?.menuItems}
               onLinkClick={handleOpenClick}
             />
           </div>
           <div className="hidden items-center gap-2 md:flex">
-            <Link href={"/employer"}>
-              <Button>Reach out to us</Button>
+            <Link href={"/contact-us"} onClick={handleOpenClick}>
+              <Button
+                showArrow={false}
+                bgColor={scrolled ? "btn-primary" : "btn-secondary"}
+              >
+                Reach out to us
+              </Button>
             </Link>
           </div>
 
@@ -120,7 +153,7 @@ const Navbar: FC<Props> = ({ NavbarData }) => {
             <button onClick={handleMenuOpen}>
               {!isMenuOpen === true ? (
                 <Image
-                  src={`${isDark ? "/icons/menu-white.svg" : "/icons/menu.svg"}`}
+                  src={lightMode ? "/icons/menu-white.svg" : "/icons/menu.svg"}
                   width={40}
                   height={40}
                   alt="hamburger-icon"
@@ -132,6 +165,7 @@ const Navbar: FC<Props> = ({ NavbarData }) => {
                   width={40}
                   height={40}
                   alt="close-icon"
+                  className={lightMode ? "invert" : ""}
                 />
               )}
             </button>
@@ -193,8 +227,6 @@ const Navbar: FC<Props> = ({ NavbarData }) => {
               </div>
 
               <Menu
-                scrolled={scrolled}
-                isOpen={isOpen}
                 isServiceMobileMenuOpen={isServiceMobileMenuOpen}
                 className="flex flex-col gap-y-0 animate-fade"
                 linkClassNames="py-4 px-6 hover:bg-blue-600 hover:text-white"
@@ -206,10 +238,10 @@ const Navbar: FC<Props> = ({ NavbarData }) => {
                 {!isServiceMobileMenuOpen ? (
                   <Link
                     onClick={handleMenuOpen}
-                    href={"/employer"}
+                    href={"/contact-us"}
                     className="*:w-full"
                   >
-                    <Button>Reach out to us</Button>
+                    <Button showArrow={false}>Reach out to us</Button>
                   </Link>
                 ) : (
                   <Link

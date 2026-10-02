@@ -48,7 +48,7 @@ const Header = ({
       ref={rootElementRef}
     >
       <PopupModal
-        url="https://calendly.com/xvintec/30min?hide_gdpr_banner=1"
+        url="https://calendly.com/xvintec-web/30min?hide_gdpr_banner=1"
         rootElement={rootElementRef.current} // Pass the ref's current value as the rootElement
         onModalClose={() => setIsPopupOpen(false)}
         open={isPopupOpen}

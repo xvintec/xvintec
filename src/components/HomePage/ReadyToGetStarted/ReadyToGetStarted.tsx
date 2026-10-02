@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useRef } from "react";
+
+import { useRouter } from "next/navigation";
 import { PopupModal, PopupWidget } from "react-calendly";
 
 import Button from "@/components/Common/Button/Button";
@@ -8,13 +10,14 @@ import H1Heading from "@/components/Common/Headings/H1Heading";
 import useIntersectionAnimation from "@/components/Common/UseScrollAnimation/UseScrollAnimation";
 
 const ReadyToGetStarted = ({ rootElementRef }: any) => {
+  const router = useRouter();
   const [sectionRef, isVisible] = useIntersectionAnimation();
   const [isPopupOpen, setIsPopupOpen] = React.useState(false);
 
   return (
-    <div className="mx-5" ref={sectionRef}>
+    <div ref={sectionRef}>
       <div
-        className={`fl-container bg-[url('/header/ReadyToBannerMobile.png')] md:bg-[url('/header/ReadyToBanner.png')] bg-cover rounded-lg py-12 text-center mb-28 ${isVisible ? " animate-fade-up" : "opacity-0"}`}
+        className={`fl-container bg-[url('/header/ReadyToBannerMobile.png')] md:bg-[url('/header/ReadyToBanner.png')] bg-cover rounded-3xl py-12 text-center mb-28 shadow-2xl ${isVisible ? " animate-fade-up" : "opacity-0"}`}
         ref={rootElementRef}
       >
         <H1Heading className="text-white">Ready to get started?</H1Heading>
@@ -27,7 +30,7 @@ const ReadyToGetStarted = ({ rootElementRef }: any) => {
         </p>
 
         <PopupModal
-          url="https://calendly.com/xvintec/30min?hide_gdpr_banner=1"
+          url="https://calendly.com/xvintec-web/30min?hide_gdpr_banner=1"
           rootElement={rootElementRef.current} // Pass the ref's current value as the rootElement
           onModalClose={() => setIsPopupOpen(false)}
           open={isPopupOpen}
@@ -37,7 +40,7 @@ const ReadyToGetStarted = ({ rootElementRef }: any) => {
           <Button
             className="mt-7 text-black"
             bgColor="btn-secondary"
-            onClick={() => {}}
+            onClick={() => router.push("/contact-us")}
           >
             Reach out to us
           </Button>

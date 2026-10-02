@@ -1,9 +1,8 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -13,155 +12,156 @@ import { ServicesData } from "@/data/ServicesData";
 
 import H1Heading from "../Common/Headings/H1Heading";
 import useIntersectionAnimation from "../Common/UseScrollAnimation/UseScrollAnimation";
-import OurServicesCard from "../HomePage/OurServices/OurServicesCard";
+
+import ServiceCaseCard from "./ServiceCaseCard";
+
+const ITEMS_PER_PAGE = 6;
+// Clears the fixed header when scrolling the section back into view.
+const NAV_OFFSET = 112;
+
+const categories = [
+  "Management",
+  "Software & application",
+  "Cloud services",
+  "Network services",
+  "Regulatory services",
+  "Social media",
+];
 
 const OurServices = () => {
   const [sectionRef, isVisible] = useIntersectionAnimation();
-  const [selectedService, setSelectedService] = React.useState(0);
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  // const [allItems, setallItems] = useState<any>(ServicesData);
-  const [visibleItems, setVisibleItems] = useState<any>();
-  const itemsPerPage = 6;
-  const totalPages = Math.ceil(ServicesData.length / itemsPerPage);
+  const topRef = useRef<HTMLDivElement>(null);
 
-  const setupInitialData = useCallback(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const filteredData = ServicesData.slice(startIndex, endIndex);
-    setVisibleItems(filteredData);
-  }, [currentPage, itemsPerPage]);
+  // Counts come from the data so a filter can never advertise the wrong number.
+  const filters = useMemo(
+    () => [
+      { label: "All services", value: null, count: ServicesData.length },
+      ...categories.map((name) => ({
+        label: name,
+        value: name,
+        count: ServicesData.filter((d: any) => d.category === name).length,
+      })),
+    ],
+    []
+  );
 
-  useEffect(() => {
-    setupInitialData();
-  }, [setupInitialData]);
+  const filtered = useMemo(
+    () =>
+      activeCategory
+        ? ServicesData.filter((d: any) => d.category === activeCategory)
+        : ServicesData,
+    [activeCategory]
+  );
 
-  const handlePrevious = () => {
-    currentPage > 1 && setCurrentPage((prevPage) => prevPage - 1);
+  const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
+  const page = Math.min(currentPage, totalPages);
+  const visibleItems = filtered.slice(
+    (page - 1) * ITEMS_PER_PAGE,
+    page * ITEMS_PER_PAGE
+  );
+
+  const selectCategory = (value: string | null) => {
+    setActiveCategory(value);
+    setCurrentPage(1);
   };
 
-  const handleNext = () => {
-    currentPage != totalPages && setCurrentPage((prevPage) => prevPage + 1);
-  };
+  // Paging from the control at the bottom would otherwise leave the reader below
+  // the section — and a short final page pushes the next section into view.
+  const goToPage = (next: number) => {
+    setCurrentPage(next);
 
-  const handlePageChange = (page: any) => {
-    setCurrentPage(page);
-  };
+    const top = topRef.current;
+    if (!top) return;
 
-  const handleServiceChange = (service: any) => {
-    console.log(service.id);
-    console.log(visibleItems);
-    setSelectedService(service.id);
-
-    const filteredData = ServicesData.filter((data) => {
-      if (service.id == 0) {
-        return data;
-      } else {
-        return data.category == service.name;
-      }
+    window.scrollTo({
+      top: top.getBoundingClientRect().top + window.scrollY - NAV_OFFSET,
+      behavior: "smooth",
     });
-
-    if (filteredData.length == ServicesData.length) {
-      setupInitialData();
-    } else {
-      setVisibleItems(filteredData);
-    }
   };
-
-  const services = [
-    { id: 0, name: "All" },
-    { id: 1, name: "Management" },
-    { id: 2, name: "Software & application" },
-    { id: 3, name: "Cloud services" },
-    { id: 4, name: "Network services" },
-    { id: 5, name: "Regulatory services" },
-    { id: 6, name: "Social media" },
-  ];
 
   return (
-    <div className={`fl-container mb-14 md:mb-14`}>
+    <div className="fl-container mb-14 md:mb-14" ref={topRef}>
       <div ref={sectionRef}>
         <H1Heading
-          className={`text-center mb-0 ${isVisible ? " animate-fade-up" : "opacity-0"}`}
+          className={`text-center mb-0 ${isVisible ? "animate-fade-up" : "opacity-0"}`}
         >
           Our services
         </H1Heading>
         <p
-          className={`py-5 text-p-grey font-light max-w-5xl text-center m-auto ${isVisible ? " animate-fade-up animate-delay-300" : "opacity-0"}`}
+          className={`py-5 text-p-grey font-light max-w-5xl text-center m-auto ${isVisible ? "animate-fade-up animate-delay-300" : "opacity-0"}`}
         >
           We&apos;ll match you with dozens of high impact services that we
           provide!
         </p>
 
-        <div className="flex flex-wrap justify-center py-2 mb-10">
-          {services.map((service, index) => (
-            <button
-              key={index}
-              onClick={() => handleServiceChange(service)}
-              className={`m-2 px-4 py-2 font-normal rounded ${selectedService == service.id ? "bg-[#0973E5] text-white" : "bg-[#F2F4FF] text-p-grey"}`}
-            >
-              {service.name}
-            </button>
-          ))}
+        <div className="mb-12 mt-6 flex flex-wrap justify-center gap-3">
+          {filters.map((filter) => {
+            const isActive = activeCategory === filter.value;
+            return (
+              <button
+                key={filter.label}
+                type="button"
+                onClick={() => selectCategory(filter.value)}
+                className={`flex h-10 items-center rounded-md px-3 text-lg transition-colors duration-200 ${
+                  isActive
+                    ? "bg-[#132128] text-white"
+                    : "bg-[#F5F5F5] text-[#132128] hover:bg-[#ECECEC]"
+                }`}
+              >
+                {filter.label}
+                <span
+                  className={`ml-2.5 text-sm font-medium ${isActive ? "text-white/70" : "text-[#0325E1]"}`}
+                >
+                  {filter.count}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      <div
-        className={`grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-5 px-3 md:px-0 gap-y-5 m-auto justify-items-center`}
-      >
-        {visibleItems?.map((data: any, index: any) => (
-          <OurServicesCard
-            key={index}
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {visibleItems.map((data: any, index: number) => (
+          <ServiceCaseCard
+            key={data.link ?? index}
             link={`/services/${data.link}`}
-            image={data.icon}
+            bannerImage={data.bannerImage}
+            category={data.category}
             title={data.title}
             content={data.content}
-            className={`${isVisible ? `animate-fade-up ${data.css}` : "opacity-0"}`}
+            className={isVisible ? `animate-fade-up ${data.css}` : "opacity-0"}
           />
         ))}
       </div>
 
-      {/* <Pagination className='py-10'>
-                <PaginationContent>
-                    <PaginationItem>
-                        <PaginationPrevious href="#"  />
-                    </PaginationItem>
-                    <PaginationItem>
-                        <PaginationLink href="#">1</PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                        <PaginationLink href="#" isActive>
-                            2
-                        </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                        <PaginationLink href="#">3</PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                        <PaginationNext href="#" />
-                    </PaginationItem>
-                </PaginationContent>
-            </Pagination> */}
-
-      <Pagination className="py-10">
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious onClick={handlePrevious} />
-          </PaginationItem>
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-            <PaginationItem key={page}>
-              <PaginationLink
-                onClick={() => handlePageChange(page)}
-                isActive={page === currentPage}
-              >
-                {page}
-              </PaginationLink>
+      {totalPages > 1 && (
+        <Pagination className="py-10">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                onClick={() => goToPage(Math.max(1, page - 1))}
+              />
             </PaginationItem>
-          ))}
-          <PaginationItem>
-            <PaginationNext onClick={handleNext} />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+              <PaginationItem key={p}>
+                <PaginationLink
+                  onClick={() => goToPage(p)}
+                  isActive={p === page}
+                >
+                  {p}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+            <PaginationItem>
+              <PaginationNext
+                onClick={() => goToPage(Math.min(totalPages, page + 1))}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
     </div>
   );
 };

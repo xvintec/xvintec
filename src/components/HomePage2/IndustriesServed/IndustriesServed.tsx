@@ -1,11 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+
+import { ChevronDown } from "lucide-react";
 
 import H1Heading from "@/components/Common/Headings/H1Heading";
+import H2Heading from "@/components/Common/Headings/H2Heading";
 import useIntersectionAnimation from "@/components/Common/UseScrollAnimation/UseScrollAnimation";
-
-import IndustryCard from "./IndustryCard";
 
 const industriesData = [
   {
@@ -13,79 +14,139 @@ const industriesData = [
     percentage: 95,
     description:
       "Secure, scalable infrastructure for high-growth software and technology businesses.",
-    css: "animate-delay-300",
   },
   {
     title: "Accounting & Finance",
     percentage: 88,
     description:
       "Compliant systems protecting sensitive financial and client data.",
-    css: "animate-delay-500",
   },
   {
     title: "Healthcare & Wellness",
     percentage: 80,
     description:
       "Compliance-ready systems for clinics, therapy practices, and wellness providers.",
-    css: "animate-delay-700",
   },
   {
     title: "Legal & Professional Services",
     percentage: 74,
     description:
       "Secure, reliable IT for law firms, consultancies, and advisory practices.",
-    css: "animate-delay-1000",
   },
   {
     title: "Real Estate & Property",
     percentage: 72,
     description:
       "Always-on connectivity and data management for agents, brokers, and property managers.",
-    css: "animate-delay-300",
   },
   {
     title: "Retail & E-Commerce",
     percentage: 68,
     description:
       "PCI-compliant networks, POS integration, and uptime you can count on.",
-    css: "animate-delay-500",
   },
   {
     title: "Education & Non-Profit",
     percentage: 60,
     description:
       "Affordable, secure infrastructure for schools, training providers, and charities.",
-    css: "animate-delay-700",
   },
   {
     title: "Construction & Trades",
     percentage: 63,
     description:
       "Mobile-ready IT and project management integration for field-based teams.",
-    css: "animate-delay-1000",
   },
   {
     title: "Hospitality & Food Service",
     percentage: 56,
     description:
       "Reliable networks, POS systems, and guest Wi-Fi for restaurants and hotels.",
-    css: "animate-delay-300",
   },
   {
     title: "Managed Services & Agencies",
     percentage: 78,
     description:
       "White-label IT solutions and scalable infrastructure for MSPs and digital agencies.",
-    css: "animate-delay-500",
   },
 ];
 
+// Matches the sticky offset below (lg:top-28 === 7rem === 112px).
+const STICKY_TOP = 112;
+// Scroll runway given to each industry.
+const VH_PER_ITEM = 38;
+
 const IndustriesServed = () => {
   const [sectionRef, isVisible] = useIntersectionAnimation();
+  // The pinned panel needs its own observer: it must reveal even when the reader
+  // lands partway into the scroll track and never sees the heading intersect.
+  const [panelRef, isPanelVisible] = useIntersectionAnimation();
+  const [openIndex, setOpenIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const trackRef = useRef<HTMLDivElement>(null);
+  const stickyRef = useRef<HTMLDivElement>(null);
+
+  // Drive the active industry from scroll progress through the tall track, so the
+  // pinned card advances as you scroll instead of needing a hover.
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    let frame = 0;
+
+    const update = () => {
+      frame = 0;
+      const rect = track.getBoundingClientRect();
+      const travel = rect.height - (stickyRef.current?.offsetHeight ?? 0);
+      if (travel <= 0) return;
+
+      const progress = Math.min(
+        Math.max((STICKY_TOP - rect.top) / travel, 0),
+        1
+      );
+      setActiveIndex(
+        Math.min(
+          industriesData.length - 1,
+          Math.floor(progress * industriesData.length)
+        )
+      );
+    };
+
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      if (frame) cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
+
+  // Clicking a list item jumps to that industry's slice of the scroll track.
+  const goToIndex = useCallback((index: number) => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    const travel = track.offsetHeight - (stickyRef.current?.offsetHeight ?? 0);
+    if (travel <= 0) return;
+
+    const trackTop = track.getBoundingClientRect().top + window.scrollY;
+    const offset = travel * ((index + 0.5) / industriesData.length);
+    window.scrollTo({ top: trackTop - STICKY_TOP + offset, behavior: "smooth" });
+  }, []);
+
+  const active = industriesData[activeIndex];
 
   return (
-    <div className="fl-container mb-20 md:mb-28" ref={sectionRef}>
-      <div className="text-center max-w-2xl m-auto mb-16">
+    <div className="fl-container mb-20 md:mb-28">
+      {/* Observer lives on the heading, not the wrapper: the desktop scroll track makes
+          the wrapper far taller than the viewport, so a ratio threshold never fires. */}
+      <div className="text-center max-w-2xl m-auto mb-16" ref={sectionRef}>
         <H1Heading
           className={`${isVisible ? "animate-fade-up" : "opacity-0"}`}
         >
@@ -98,16 +159,111 @@ const IndustriesServed = () => {
           enterprise-grade IT to organizations of every shape and size.
         </p>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 px-3 md:px-0 gap-y-8 m-auto justify-items-center">
-        {industriesData.map((industry, index) => (
-          <IndustryCard
-            key={index}
-            title={industry.title}
-            percentage={industry.percentage}
-            description={industry.description}
-            className={`${isVisible ? `animate-fade-up ${industry.css}` : "opacity-0"}`}
-          />
-        ))}
+
+      {/* Mobile: accordion */}
+      <div className="flex flex-col gap-2 lg:hidden">
+        {industriesData.map((industry, index) => {
+          const isOpen = openIndex === index;
+          return (
+            <div
+              key={industry.title}
+              className="overflow-hidden rounded-xl border border-gray-100"
+            >
+              <button
+                type="button"
+                onClick={() => setOpenIndex(isOpen ? -1 : index)}
+                className={`flex w-full items-center justify-between gap-4 px-4 py-4 text-left transition-colors duration-200 ${
+                  isOpen ? "bg-[#EEF5FC] text-[#0325E1] font-semibold" : "text-p-grey"
+                }`}
+              >
+                {industry.title}
+                <ChevronDown
+                  size={18}
+                  className={`shrink-0 transition-transform duration-300 ease-out ${isOpen ? "rotate-180" : ""}`}
+                />
+              </button>
+              {/* Animating grid rows lets the panel ease open without hardcoding a
+                  height for copy that wraps differently per industry. */}
+              <div
+                className={`grid transition-all duration-300 ease-out ${
+                  isOpen
+                    ? "grid-rows-[1fr] opacity-100"
+                    : "grid-rows-[0fr] opacity-0"
+                }`}
+              >
+                <div className="overflow-hidden">
+                  <div className="px-4 pb-5 pt-1">
+                    <div className="w-full h-2 bg-grey-light rounded-full mt-3 mb-4">
+                      <div
+                        className="h-2 rounded-full bg-gradient-to-r from-[#0DA7E9] to-[#0429E2]"
+                        style={{ width: `${industry.percentage}%` }}
+                      />
+                    </div>
+                    <p className="text-p-grey font-normal">
+                      {industry.description}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Desktop: tall scroll track pins both columns while the card advances */}
+      <div
+        ref={trackRef}
+        className="hidden lg:block relative"
+        style={{ height: `${industriesData.length * VH_PER_ITEM}vh` }}
+      >
+        <div ref={stickyRef} className="sticky top-28">
+          <div ref={panelRef} className="grid grid-cols-12 gap-12 items-start">
+            <div
+              className={`col-span-4 ${isPanelVisible ? "animate-fade-up animate-delay-300" : "opacity-0"}`}
+            >
+              <ul className="flex flex-col gap-1">
+                {industriesData.map((industry, index) => (
+                  <li key={industry.title}>
+                    <button
+                      type="button"
+                      onClick={() => goToIndex(index)}
+                      className={`w-full text-left px-4 py-3 rounded-lg transition-colors duration-200 ${
+                        activeIndex === index
+                          ? "bg-[#EEF5FC] text-[#0325E1] font-semibold"
+                          : "text-p-grey hover:bg-gray-50"
+                      }`}
+                    >
+                      {industry.title}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div
+              className={`col-span-8 ${isPanelVisible ? "animate-fade animate-delay-300" : "opacity-0"}`}
+            >
+              <div className="min-h-[280px] rounded-3xl border border-gray-100 bg-white p-8 md:p-12 shadow-xl flex flex-col md:flex-row md:items-center gap-8">
+                <div className="md:w-1/2">
+                  <H2Heading className="text-2xl md:text-3xl">
+                    {active.title}
+                  </H2Heading>
+                </div>
+                <div className="md:w-1/2">
+                  <div className="w-full h-2 bg-grey-light rounded-full mt-3 mb-4">
+                    <div
+                      className="h-2 rounded-full bg-gradient-to-r from-[#0DA7E9] to-[#0429E2] transition-all duration-500"
+                      style={{ width: `${active.percentage}%` }}
+                    />
+                  </div>
+                  <p className="min-h-[3.6em] text-p-grey font-normal">
+                    {active.description}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

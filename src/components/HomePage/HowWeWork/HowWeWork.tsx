@@ -42,7 +42,7 @@ const HowWeKnow = () => {
         How we work
       </H1Heading>
       <div
-        className={`grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-5 px-3 md:px-0 gap-y-8 m-auto justify-items-center`}
+        className={`grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-5 gap-y-8 m-auto justify-items-center`}
       >
         {howWeKnowData.map((data, index) => (
           <HowWeKnowCard

@@ -7,14 +7,16 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    # 💡 FIX 1: Pin to ubuntu-24.04 to avoid unexpected breaking changes during the Ubuntu 26 migration
+    runs-on: ubuntu-24.04
     
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v4
 
       - name: Executing remote SSH commands to deploy
-        uses: appleboy/ssh-action@v1.0.3
+        # 💡 FIX 2: Upgraded from v1.0.3 to v1.2.0 to fully support GitHub's updated Node.js runtime
+        uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}

@@ -14,22 +14,22 @@ const contactMethods = [
   {
     icon: Phone,
     title: "Phone",
-    value: "[Xvintec phone number]",
+    value: "0777517850",
   },
   {
     icon: Mail,
     title: "Email",
-    value: "[Xvintec email address]",
+    value: "Info@xvintec.com",
   },
   {
     icon: Linkedin,
     title: "LinkedIn",
-    value: "[Xvintec LinkedIn page]",
+    value: "https://www.linkedin.com/company/xvintec/home/",
   },
   {
     icon: MapPin,
     title: "Office",
-    value: "[Xvintec office address]",
+    value: "342, Galle road, Kollupitiya",
   },
 ];
 
@@ -58,11 +58,11 @@ const ContactInfo = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 px-3 md:px-0 gap-y-8 m-auto justify-items-center mb-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 gap-y-8 m-auto justify-items-center mb-10">
         {contactMethods.map((method, index) => (
           <div
             key={index}
-            className={`max-w-md w-full bg-white py-8 px-6 rounded-lg text-center border border-transparent transition-all duration-300 hover:-translate-y-1 hover:border-secondary/40 hover:shadow-lg ${isVisible ? "animate-fade-up animate-delay-300" : "opacity-0"}`}
+            className={`max-w-md w-full bg-white py-8 px-6 rounded-2xl text-center border border-gray-100 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${isVisible ? "animate-fade-up animate-delay-300" : "opacity-0"}`}
           >
             <method.icon
               color="url(#brand-gradient)"
@@ -79,7 +79,7 @@ const ContactInfo = () => {
       <div
         className={`grid grid-cols-1 md:grid-cols-2 gap-5 ${isVisible ? "animate-fade-up animate-delay-500" : "opacity-0"}`}
       >
-        <div className="bg-white py-8 px-6 rounded-lg">
+        <div className="bg-white py-8 px-6 rounded-2xl border border-gray-100">
           <H2Heading>SLA Commitment</H2Heading>
           <ul className="mt-4 space-y-2">
             {slaCommitments.map((sla, index) => (
@@ -93,10 +93,10 @@ const ContactInfo = () => {
             ))}
           </ul>
         </div>
-        <div className="bg-white py-8 px-6 rounded-lg">
+        <div className="bg-white py-8 px-6 rounded-2xl border border-gray-100">
           <H2Heading>Office Locations</H2Heading>
           <p className="text-p-grey font-normal mt-4">
-            [Xvintec office locations to be added]
+            Based in Kollupitiya. Supporting Businesses Islandwide.
           </p>
         </div>
       </div>

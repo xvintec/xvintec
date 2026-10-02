@@ -2,9 +2,7 @@ import React from "react";
 
 import Image from "next/image";
 
-import Button from "@/components/Common/Button/Button";
 import H1Heading from "@/components/Common/Headings/H1Heading";
-import H2Heading from "@/components/Common/Headings/H2Heading";
 import useIntersectionAnimation from "@/components/Common/UseScrollAnimation/UseScrollAnimation";
 
 const OurServiceSecondsec = ({ title, contentTwo, contentImage }: any) => {
@@ -12,27 +10,53 @@ const OurServiceSecondsec = ({ title, contentTwo, contentImage }: any) => {
 
   return (
     <div
-      className={`fl-container py-10 md:py-0 ${isVisible ? `animate-fade-up` : "opacity-0"}`}
+      className="relative overflow-hidden bg-navy py-16 md:py-24"
       ref={sectionRef}
     >
-      <div
-        className={`flex md:grid flex-col-reverse grid-cols-1 md:grid-cols-10 lg:grid-cols-10 gap-5 px-3 md:px-0 md:pb-20 gap-y-8 m-auto justify-items-center`}
-      >
-        <div className="w-full max-w-md md:max-w-lg md:col-span-4">
-          <Image
-            className="rounded-lg object-contain w-full h-full"
-            src={contentImage}
-            width={500}
-            height={500}
-            alt="why-choose-us"
-          />
+      {/* Artwork bleeds past the right edge and dissolves into the navy, the way
+          Highspring's "what if" band carries its device shot. */}
+      <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[58%] md:block">
+        <Image
+          src={contentImage}
+          alt=""
+          fill
+          sizes="58vw"
+          className="scale-110 object-contain object-right"
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(265.64deg, rgba(10,27,61,0) 30%, #0A1B3D 72%)",
+          }}
+        />
+      </div>
+
+      <div className="fl-container relative">
+        <div className="max-w-xl lg:max-w-[46%]">
+          <H1Heading
+            className={`text-white ${isVisible ? "animate-fade-up" : "opacity-0"}`}
+          >
+            {title}
+          </H1Heading>
+          <p
+            className={`mt-5 text-gray-400 font-light ${isVisible ? "animate-fade-up animate-delay-300" : "opacity-0"}`}
+          >
+            {contentTwo}
+          </p>
         </div>
-        <div className="py-3 md:col-span-6 ml-0 md:ml-10 lg:ml-20 text-center md:text-left content-center">
-          <H2Heading className="my-3 md:my-5">{title}</H2Heading>
-          <p className="text-p-grey font-light">{contentTwo}</p>
-          {/* <Button className="mt-10 animate-fade animate-delay-700">
-            Get a quote
-          </Button> */}
+
+        {/* Phones stack the artwork under the copy instead of bleeding it. */}
+        <div
+          className={`relative mt-10 h-64 w-full md:hidden ${isVisible ? "animate-fade animate-delay-500" : "opacity-0"}`}
+        >
+          <Image
+            src={contentImage}
+            alt=""
+            fill
+            sizes="100vw"
+            className="object-contain"
+          />
         </div>
       </div>
     </div>

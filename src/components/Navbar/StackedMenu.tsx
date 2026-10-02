@@ -1,202 +1,198 @@
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import Image from "next/image";
 import Link from "next/link";
+import { ArrowUpRight, ChevronDown } from "lucide-react";
 
 import { ServicesData } from "@/data/ServicesData";
 import { StackedMenuProps } from "@/types/CommonTypes";
 
+const RECT_BUFFER = 12;
+
 const StackedMenu = ({
-  isDark,
-  scrolled,
   isOpen,
-  onClick,
+  onOpen,
+  onClose,
+  onLinkClick,
+  lightMode,
+  navHeight = 80,
 }: StackedMenuProps) => {
   const [isHoverValue, setIsHoverValue] = useState<any>(ServicesData[0]);
-
-  // const hoverMouse = (val: any) => {
-  //     console.log(isHoverValue);
-  //     setIsHoverValue([]);
-  // }
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    console.log(isHoverValue);
-  }, [isHoverValue]);
+    if (!isOpen) return;
 
-  // console.log(ServicesData);
+    const isInsideRect = (rect: DOMRect | undefined, x: number, y: number) =>
+      !!rect &&
+      x >= rect.left - RECT_BUFFER &&
+      x <= rect.right + RECT_BUFFER &&
+      y >= rect.top - RECT_BUFFER &&
+      y <= rect.bottom + RECT_BUFFER;
+
+    // The header's own padding plus the panel's offset leave a strip under the
+    // trigger that belongs to neither rect. Count it as part of the menu, so
+    // travelling down into the panel never trips the close timer.
+    const isInsideBridge = (
+      trigger: DOMRect | undefined,
+      panel: DOMRect | undefined,
+      x: number,
+      y: number
+    ) =>
+      !!trigger &&
+      !!panel &&
+      y >= trigger.bottom &&
+      y <= panel.top + RECT_BUFFER &&
+      x >= panel.left &&
+      x <= panel.right;
+
+    const handleMove = (e: MouseEvent) => {
+      const triggerRect = triggerRef.current?.getBoundingClientRect();
+      const panelRect = panelRef.current?.getBoundingClientRect();
+      const inside =
+        isInsideRect(triggerRect, e.clientX, e.clientY) ||
+        isInsideRect(panelRect, e.clientX, e.clientY) ||
+        isInsideBridge(triggerRect, panelRect, e.clientX, e.clientY);
+
+      if (inside) {
+        onOpen?.();
+      } else {
+        onClose?.();
+      }
+    };
+
+    const handleWindowLeave = () => onClose?.();
+
+    document.addEventListener("mousemove", handleMove);
+    document.documentElement.addEventListener("mouseleave", handleWindowLeave);
+    return () => {
+      document.removeEventListener("mousemove", handleMove);
+      document.documentElement.removeEventListener("mouseleave", handleWindowLeave);
+    };
+  }, [isOpen, onOpen, onClose]);
 
   return (
-    <div className="relative mr-16">
-      <div
-        className="inline-flex z-10 items-center gap-x-1 text-base font-semibold leading-6 text-gray-900"
-        // onClick={onClick}
-        onMouseEnter={onClick}
+    <div className="relative mr-8">
+      <button
+        ref={triggerRef}
+        type="button"
+        onClick={onOpen}
+        onMouseEnter={onOpen}
+        className={`group relative flex items-center gap-2 text-sm font-medium ${lightMode ? "text-white" : "text-h1-black"}`}
       >
-        <Link
-          href={"/services"}
-          className={`flex items-center gap-2 font-normal ${isDark == true ? `${scrolled || isOpen ? 'text-h1-black"' : "text-white"}` : "text-h1-black"} cursor-pointer transition-colors lg:hover:text-[#414141]`}
-        >
+        <span className="relative">
           Services
-          {isDark == true ? (
-            scrolled || isOpen ? (
-              <Image
-                className="h-4 w-auto object-contain"
-                src={`/svgs/vuesax-linear-arrow-down.svg`}
-                width={20}
-                height={20}
-                alt="overview-icon"
-              />
-            ) : (
-              <Image
-                className="h-4 w-auto object-contain"
-                src={`/svgs/vuesax-linear-arrow-down-white.svg`}
-                width={20}
-                height={20}
-                alt="overview-icon"
-              />
-            )
-          ) : (
-            <Image
-              className="h-4 w-auto object-contain"
-              src={`/svgs/vuesax-linear-arrow-down.svg`}
-              width={20}
-              height={20}
-              alt="overview-icon"
-            />
-          )}
-        </Link>
-      </div>
+          <span
+            className={`absolute -bottom-1 left-0 h-[2px] w-0 transition-all duration-300 group-hover:w-full ${lightMode ? "bg-white" : "bg-[#0325E1]"}`}
+          />
+        </span>
+        <ChevronDown
+          size={16}
+          className={`transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+        />
+      </button>
 
-      <div>
+      <div
+        className={`fixed left-0 z-10 w-screen justify-center px-4 ${isOpen ? "flex" : "hidden"}`}
+        style={{ top: navHeight }}
+      >
         <div
-          className={`fixed left-0 z-10 mt-5 flex w-screen max-w-max ${isOpen ? "block" : "hidden"}`}
+          ref={panelRef}
+          className="mt-1 w-full max-w-[1200px] grid grid-cols-12 flex-auto overflow-hidden rounded-2xl bg-white text-sm leading-6 shadow-xl ring-1 ring-black/5"
         >
-          <div className="w-screen max-w-full grid grid-cols-12 flex-auto overflow-hidden bg-[#F5FBFF] text-sm leading-6 shadow-lg ring-1 ring-gray-900/5">
-            <div className="col-span-9">
-              <div className="mt-1 text-[#A2A2A2] text-base font-semibold pl-8 pt-8">
-                ALL SERVICES
-              </div>
-              <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-3 col-span-9">
-                <div className="p-4 pb-1">
-                  {ServicesData.slice(0, 5).map((item) => (
-                    <div
+          <Link
+            href={"/services"}
+            onClick={onLinkClick}
+            className="group col-span-3 self-start rounded-xl p-6 transition-shadow duration-200 hover:bg-[#F5FBFF] hover:shadow-sm"
+          >
+            <h3 className="text-lg font-semibold text-h1-black">Services</h3>
+            <p className="mt-2 text-[#727272] leading-relaxed">
+              From managed support to cloud, security, and compliance — we
+              deliver enterprise-grade IT services tailored to how your
+              business actually runs.
+            </p>
+            <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-[#0325E1]">
+              Learn more
+              <ArrowUpRight
+                size={14}
+                className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+              />
+            </span>
+          </Link>
+
+          <div className="col-span-6 border-x border-gray-100 p-6">
+            <div className="text-[#A2A2A2] text-xs font-semibold tracking-wide uppercase pl-2 pb-2">
+              All Services
+            </div>
+            <div className="grid grid-cols-2">
+              {[0, 8].map((start) => (
+                <div key={start} className="p-1">
+                  {ServicesData.slice(start, start + 8).map((item) => (
+                    <Link
                       key={item.title}
-                      className="group relative flex gap-x-6 rounded-lg p-4 hover:bg-white"
+                      href={"/services/" + item.link}
+                      className="group flex items-center gap-2 rounded-lg px-3 py-2.5 transition-shadow duration-200 hover:bg-[#F5FBFF] hover:shadow-sm"
                       onMouseEnter={() => setIsHoverValue(item)}
+                      onClick={onLinkClick}
                     >
-                      <div>
-                        <Link
-                          href={"/services/" + item.link}
-                          className="font-semibold text-base text-gray-900 group-hover:text-[#0325E1]"
-                        >
-                          {item.title}
-                          <span className="absolute inset-0" />
-                        </Link>
-                        <p className="mt-1 text-[#727272] max-lines">
-                          {item.description}
-                        </p>
-                      </div>
-                    </div>
+                      <ArrowUpRight
+                        size={14}
+                        className="shrink-0 text-[#A2A2A2] transition-all duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[#0325E1]"
+                      />
+                      <span className="font-medium text-h1-black group-hover:text-[#0325E1] transition-colors">
+                        {item.title}
+                      </span>
+                    </Link>
                   ))}
                 </div>
-                <div className="p-4 pb-1">
-                  {ServicesData.slice(5, 10).map((item) => (
-                    <div
-                      key={item.title}
-                      className="group relative flex gap-x-6 rounded-lg p-4 hover:bg-white  "
-                      onMouseEnter={() => setIsHoverValue(item)}
-                    >
-                      <div>
-                        <Link
-                          href={"/services/" + item.link}
-                          className="font-semibold text-base text-gray-900 group-hover:text-[#0325E1]"
-                        >
-                          {item.title}
-                          <span className="absolute inset-0" />
-                        </Link>
-                        <p className="mt-1 text-[#727272] max-lines">
-                          {item.description}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <div className="p-4 pb-1">
-                  {ServicesData.slice(10, 15).map((item) => (
-                    <div
-                      key={item.title}
-                      className="group relative flex gap-x-6 rounded-lg p-4 hover:bg-white  "
-                      onMouseEnter={() => setIsHoverValue(item)}
-                    >
-                      <div>
-                        <Link
-                          href={"/services/" + item.link}
-                          className="font-semibold text-base text-gray-900 group-hover:text-[#0325E1]"
-                        >
-                          {item.title}
-                          <span className="absolute inset-0" />
-                        </Link>
-                        <p className="mt-1 text-[#727272] max-lines">
-                          {item.description}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <Link href={"/services"}>
-                <div className="relative bottom-11 right-10 text-right text-base font-semibold text-[#0325E1]">
-                  View all Services
-                </div>
+              ))}
+            </div>
+            <Link
+              href={"/services"}
+              onClick={onLinkClick}
+              className="group mt-2 flex items-center justify-end gap-1 text-sm font-semibold text-[#0325E1]"
+            >
+              View all Services
+              <ArrowUpRight
+                size={14}
+                className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+              />
+            </Link>
+          </div>
+
+          <div className="col-span-3 bg-[#F5FBFF] p-5">
+            <span className="inline-block text-[11px] font-semibold uppercase tracking-wide text-[#0325E1] bg-white rounded-full px-2.5 py-1">
+              Overview
+            </span>
+            <div className="mt-4 flex h-32 w-full items-center justify-center overflow-hidden rounded-xl bg-white">
+              <Image
+                className="h-28 w-auto object-contain"
+                src={`/services/img/banner-updated/${isHoverValue["bannerImage"]}`}
+                width={200}
+                height={200}
+                alt="overview-icon"
+              />
+            </div>
+            <div className="pt-4">
+              <p className="min-h-[3rem] text-base font-semibold text-h1-black">
+                {isHoverValue["title"]}
+              </p>
+              <p className="mt-1 h-[3.6em] pb-4 text-[#727272] max-lines">
+                {isHoverValue["description"]}
+              </p>
+              <Link
+                href={"/services/" + isHoverValue.link}
+                onClick={onLinkClick}
+                className="group inline-flex items-center gap-1 text-sm font-semibold text-[#0325E1]"
+              >
+                Learn more
+                <ArrowUpRight
+                  size={14}
+                  className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                />
               </Link>
             </div>
-            <div className="bg-white col-span-3">
-              <div className="mt-1 text-[#A2A2A2] text-base font-semibold pl-8 pt-8">
-                OVERVIEW
-              </div>
-              <div className="p-4">
-                <div className="group relative gap-x-6 rounded-lg p-4 h">
-                  <div className="mt-1 flex max-w-64 h-full w-full flex-none items-center justify-center rounded-lg ">
-                    <Image
-                      className="h-48 w-auto object-contain"
-                      src={`/services/img/banner-updated/${isHoverValue["bannerImage"]}`}
-                      width={200}
-                      height={200}
-                      alt="overview-icon"
-                    />
-                  </div>
-                  <div className="py-5">
-                    <a
-                      href="#"
-                      className=" text-base font-semibold text-gray-900"
-                    >
-                      {isHoverValue["title"]}
-                    </a>
-                    <p className="pt-1 pb-5 text-[#727272]">
-                      {isHoverValue["description"]}
-                    </p>
-                    <Link
-                      href={"/services/" + isHoverValue.link}
-                      className="text-base font-semibold text-[#0325E1] underline"
-                    >
-                      Learn more
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* <div className="grid grid-cols-2 divide-x divide-gray-900/5 bg-gray-50">
-              {callsToAction.map((item) => (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  className="flex items-center justify-center gap-x-2.5 p-3 font-semibold text-gray-900 hover:bg-gray-100"
-                >
-                  {item.name}
-                </a>
-              ))}
-            </div> */}
           </div>
         </div>
       </div>
