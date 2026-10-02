@@ -14,22 +14,22 @@ const contactMethods = [
   {
     icon: Phone,
     title: "Phone",
-    value: "[Xvintec phone number]",
+    value: "0777517850",
   },
   {
     icon: Mail,
     title: "Email",
-    value: "[Xvintec email address]",
+    value: "Info@xvintec.com",
   },
   {
     icon: Linkedin,
     title: "LinkedIn",
-    value: "[Xvintec LinkedIn page]",
+    value: "https://www.linkedin.com/company/xvintec/home/",
   },
   {
     icon: MapPin,
     title: "Office",
-    value: "[Xvintec office address]",
+    value: "342, Galle road, Kollupitiya",
   },
 ];
 
