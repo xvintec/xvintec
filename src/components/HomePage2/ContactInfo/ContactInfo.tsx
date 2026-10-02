@@ -71,7 +71,9 @@ const ContactInfo = () => {
               strokeWidth={1.5}
             />
             <H2Heading className="mt-4">{method.title}</H2Heading>
-            <p className="text-p-grey font-normal mt-1">{method.value}</p>
+            <p className="text-p-grey font-normal mt-1 break-words">
+              {method.value}
+            </p>
           </div>
         ))}
       </div>
