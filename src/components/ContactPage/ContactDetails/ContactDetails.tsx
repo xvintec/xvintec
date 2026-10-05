@@ -14,12 +14,24 @@ const PopupModal = dynamic(
   { ssr: false }
 );
 
-// Placeholder contact details — replace with Xvintec's real office address,
-// phone number, and email before publishing.
 const findUsDetails = [
-  { icon: Building2, label: "Office address", value: "[Office address]" },
-  { icon: Phone, label: "Phone / WhatsApp", value: "[Phone number]" },
-  { icon: Mail, label: "Email us", value: "[Email address]" },
+  {
+    icon: Building2,
+    label: "Office address",
+    value: "342, Galle road, Kollupitiya",
+  },
+  {
+    icon: Phone,
+    label: "Phone / WhatsApp",
+    value: "0777517850",
+    href: "tel:0777517850",
+  },
+  {
+    icon: Mail,
+    label: "Email us",
+    value: "Info@xvintec.com",
+    href: "mailto:Info@xvintec.com",
+  },
 ];
 
 const ContactDetails = ({ rootElementRef }: any) => {
@@ -48,7 +60,13 @@ const ContactDetails = ({ rootElementRef }: any) => {
                   {detail.label}
                 </p>
                 <p className="text-p-black font-medium mt-0.5">
-                  {detail.value}
+                  {detail.href ? (
+                    <a href={detail.href} className="hover:underline">
+                      {detail.value}
+                    </a>
+                  ) : (
+                    detail.value
+                  )}
                 </p>
               </div>
             </li>
