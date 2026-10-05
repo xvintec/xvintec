@@ -2,7 +2,6 @@
 
 import React from "react";
 
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 
@@ -79,12 +78,6 @@ const CaseStudies = () => {
             className="relative overflow-hidden rounded-3xl min-h-[420px] flex flex-col justify-center p-10 md:p-12"
             style={{ background: "var(--hero-gradient)" }}
           >
-            <Image
-              src="/images/bussiness-people-working-team-office.jpg"
-              alt=""
-              fill
-              className="object-cover opacity-20"
-            />
             <div className="relative">
               <div className="text-6xl md:text-7xl font-semibold text-white">
                 200+

@@ -8,23 +8,29 @@ import H1Heading from "@/components/Common/Headings/H1Heading";
 import H2Heading from "@/components/Common/Headings/H2Heading";
 import useIntersectionAnimation from "@/components/Common/UseScrollAnimation/UseScrollAnimation";
 
-// Placeholder contact details — replace with Xvintec's real numbers,
-// email, and office addresses before publishing.
-const contactMethods = [
+const contactMethods: {
+  icon: typeof Phone;
+  title: string;
+  value: string;
+  href?: string;
+}[] = [
   {
     icon: Phone,
     title: "Phone",
     value: "0777517850",
+    href: "tel:0777517850",
   },
   {
     icon: Mail,
     title: "Email",
     value: "Info@xvintec.com",
+    href: "mailto:Info@xvintec.com",
   },
   {
     icon: Linkedin,
     title: "LinkedIn",
-    value: "https://www.linkedin.com/company/xvintec/home/",
+    value: "xvintec/home",
+    href: "https://www.linkedin.com/company/xvintec/home/",
   },
   {
     icon: MapPin,
@@ -72,7 +78,19 @@ const ContactInfo = () => {
             />
             <H2Heading className="mt-4">{method.title}</H2Heading>
             <p className="text-p-grey font-normal mt-1 break-words">
-              {method.value}
+              {method.href ? (
+                <a
+                  href={method.href}
+                  className="hover:underline"
+                  {...(method.href.startsWith("http")
+                    ? { target: "_blank", rel: "noopener noreferrer" }
+                    : {})}
+                >
+                  {method.value}
+                </a>
+              ) : (
+                method.value
+              )}
             </p>
           </div>
         ))}
