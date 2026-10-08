@@ -5,7 +5,7 @@ import React, { useRef } from "react";
 import IndividualServiceHeader from "@/components/Header/IndividualServiceHeader";
 import OurDevelopmentApproach from "@/components/HomePage/OurServices/OurDevelopmentApproach";
 import ReadyToGetStarted from "@/components/HomePage/ReadyToGetStarted/ReadyToGetStarted";
-import Testimonials2 from "@/components/HomePage2/Testimonials2/Testimonials2";
+import TestimonialsSlider from "@/components/HomePage2/TestimonialsSlider/TestimonialsSlider";
 import TrustedByEnterprises from "@/components/HomePage2/TrustedByEnterprises/TrustedByEnterprises";
 import OurServices from "@/components/ServicesPage/OurServices";
 
@@ -35,7 +35,7 @@ const Services = () => {
         content2="Evaluate the client's existing systems, processes, and performance assessments, and scalability evaluations as needed."
         content3="Develop a small-scale version or prototype of the proposed solution, and gather feedback from stakeholders and end-users to validate assumptions and refine the concept"
       />
-      <Testimonials2 />
+      <TestimonialsSlider />
 
       <ReadyToGetStarted rootElementRef={rootElementRef} />
     </div>
