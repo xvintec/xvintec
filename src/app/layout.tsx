@@ -5,6 +5,7 @@ import Script from "next/script";
 import CalendlyBadge from "@/components/CalendlyBadge/CalendlyBadge";
 import Footer from "@/components/Footer/Footer";
 import Navbar from "@/components/Navbar/Navbar";
+import SiteLoader, { SITE_LOADER_SCRIPT } from "@/components/SiteLoader/SiteLoader";
 import { NavbarData } from "@/data/NavbarData";
 
 import "./globals.css";
@@ -29,11 +30,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    // suppressHydrationWarning: the splash script adds classes to <html>
+    // before React hydrates.
+    <html lang="en" suppressHydrationWarning>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href={`${BASE_PATH}/logos/favicon.png`} />
         <link rel="preconnect" href="https://fonts.gstatic.com" />
+        <script dangerouslySetInnerHTML={{ __html: SITE_LOADER_SCRIPT }} />
         <Script id="gtm-script" strategy="afterInteractive">
           {`
             (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -59,6 +63,7 @@ export default function RootLayout({
           ></iframe>
         </noscript>
 
+        <SiteLoader />
         <Navbar NavbarData={NavbarData} />
         {children}
         <Footer />
