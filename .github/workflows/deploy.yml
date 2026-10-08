@@ -17,17 +17,35 @@ jobs:
       - name: Executing remote SSH commands to deploy
         # 💡 FIX 2: Upgraded from v1.0.3 to v1.2.0 to fully support GitHub's updated Node.js runtime
         uses: appleboy/ssh-action@v1.2.0
+        env:
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          CONTACT_TO_EMAIL: ${{ secrets.CONTACT_TO_EMAIL }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           command_timeout: 20m
+          # Contact form SMTP settings, forwarded from the repo's Actions secrets
+          envs: SMTP_HOST,SMTP_PORT,SMTP_USER,SMTP_PASS,CONTACT_TO_EMAIL
           script: |
             # 1. Navigate to your specific subfolder
             cd /var/www/html/
             
             # 2. Pull the newest changes from your branch
             git pull origin homepage-v2
+
+            # 2b. Write the contact form settings for `next start` to load
+            umask 077
+            printf '%s\n' \
+              "SMTP_HOST=$SMTP_HOST" \
+              "SMTP_PORT=$SMTP_PORT" \
+              "SMTP_USER=$SMTP_USER" \
+              "SMTP_PASS=$SMTP_PASS" \
+              "CONTACT_TO_EMAIL=$CONTACT_TO_EMAIL" > .env.production
+            umask 022
             
             # 3. Load Node/NVM environment
             export NVM_DIR="$HOME/.nvm"

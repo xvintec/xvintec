@@ -24,6 +24,8 @@ export interface ButtonProps {
   className?: string;
   onClick?: () => void;
   showArrow?: boolean;
+  type?: "button" | "submit" | "reset";
+  disabled?: boolean;
 }
 
 export interface StackedMenuProps {

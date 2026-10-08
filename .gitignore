@@ -73,6 +73,8 @@ __MACOSX/
 
 # dotenv environment variables file
 .env
+.env*.local
+.env.production
 
 # Static export output (GitHub Pages preview build)
 out/
