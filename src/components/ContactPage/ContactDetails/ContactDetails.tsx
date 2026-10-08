@@ -18,13 +18,13 @@ const findUsDetails = [
   {
     icon: Building2,
     label: "Office address",
-    value: "342, Galle road, Kollupitiya",
+    value: "342, Galle road, Kollupitiya\nColombo, Sri Lanka.",
   },
   {
     icon: Phone,
     label: "Phone / WhatsApp",
-    value: "0777517850",
-    href: "tel:0777517850",
+    value: "+94 77 751 7850",
+    href: "tel:+94777517850",
   },
   {
     icon: Mail,
@@ -59,7 +59,7 @@ const ContactDetails = ({ rootElementRef }: any) => {
                 <p className="text-xs font-semibold uppercase tracking-wide text-p-grey">
                   {detail.label}
                 </p>
-                <p className="text-p-black font-medium mt-0.5">
+                <p className="text-p-black font-medium mt-0.5 whitespace-pre-line">
                   {detail.href ? (
                     <a href={detail.href} className="hover:underline">
                       {detail.value}
@@ -81,16 +81,8 @@ const ContactDetails = ({ rootElementRef }: any) => {
         </div>
         <ul className="mt-5 space-y-3">
           <li className="flex items-center justify-between text-p-grey font-normal">
-            <span>Monday – Friday</span>
-            <span className="font-medium text-p-black">
-              [Business hours]
-            </span>
-          </li>
-          <li className="flex items-center justify-between text-p-grey font-normal">
-            <span>Saturday &amp; Sunday</span>
-            <span className="font-medium text-p-black">
-              [Business hours]
-            </span>
+            <span>Monday – Sunday</span>
+            <span className="font-medium text-p-black">24/7 Operations</span>
           </li>
         </ul>
       </div>

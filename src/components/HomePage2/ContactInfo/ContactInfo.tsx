@@ -17,8 +17,8 @@ const contactMethods: {
   {
     icon: Phone,
     title: "Phone",
-    value: "0777517850",
-    href: "tel:0777517850",
+    value: "+94 77 751 7850",
+    href: "tel:+94777517850",
   },
   {
     icon: Mail,
@@ -29,13 +29,13 @@ const contactMethods: {
   {
     icon: Linkedin,
     title: "LinkedIn",
-    value: "xvintec/home",
+    value: "xvintec",
     href: "https://www.linkedin.com/company/xvintec/home/",
   },
   {
     icon: MapPin,
     title: "Office",
-    value: "342, Galle road, Kollupitiya",
+    value: "Colombo, Sri Lanka.",
   },
 ];
 
@@ -77,7 +77,7 @@ const ContactInfo = () => {
               strokeWidth={1.5}
             />
             <H2Heading className="mt-4">{method.title}</H2Heading>
-            <p className="text-p-grey font-normal mt-1 break-words">
+            <p className="text-p-grey font-normal mt-1 break-words whitespace-pre-line">
               {method.href ? (
                 <a
                   href={method.href}
