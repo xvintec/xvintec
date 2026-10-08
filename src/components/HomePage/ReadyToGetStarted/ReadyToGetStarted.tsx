@@ -17,7 +17,8 @@ const ReadyToGetStarted = ({ rootElementRef }: any) => {
   return (
     <div ref={sectionRef}>
       <div
-        className={`fl-container bg-[url('/header/ReadyToBannerMobile.png')] md:bg-[url('/header/ReadyToBanner.png')] bg-cover rounded-3xl py-12 text-center mb-28 shadow-2xl ${isVisible ? " animate-fade-up" : "opacity-0"}`}
+        className={`fl-container rounded-3xl py-12 text-center mb-28 shadow-2xl ${isVisible ? " animate-fade-up" : "opacity-0"}`}
+        style={{ background: "var(--hero-gradient)" }}
         ref={rootElementRef}
       >
         <H1Heading className="text-white">Ready to get started?</H1Heading>
