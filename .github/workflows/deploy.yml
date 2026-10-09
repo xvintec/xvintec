@@ -31,10 +31,19 @@ jobs:
           # Contact form SMTP settings, forwarded from the repo's Actions secrets
           envs: SMTP_HOST,SMTP_PORT,SMTP_USER,SMTP_PASS,CONTACT_TO_EMAIL
           script: |
+            # Stop at the first failing command so a broken deploy fails the run
+            # instead of silently rebuilding and reloading the old code.
+            set -e
+
             # 1. Navigate to your specific subfolder
             cd /var/www/html/
             
-            # 2. Pull the newest changes from your branch
+            # 2. Discard lockfile/build-cache edits made by earlier deploys (they
+            #    block the pull), then pull the newest changes from your branch
+            git checkout -- package-lock.json yarn.lock
+            if git ls-files --error-unmatch tsconfig.tsbuildinfo >/dev/null 2>&1; then
+              git checkout -- tsconfig.tsbuildinfo
+            fi
             git pull origin homepage-v2
 
             # 2b. Write the contact form settings for `next start` to load
@@ -49,10 +58,12 @@ jobs:
             
             # 3. Load Node/NVM environment
             export NVM_DIR="$HOME/.nvm"
+            set +e # nvm.sh isn't safe to source under `set -e`
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            set -e
             
-            # 4. Install dependencies
-            npm install
+            # 4. Install exactly what the lockfile pins (`npm ci` never rewrites it)
+            npm ci
             
             # 5. Build the production build
             npm run build
