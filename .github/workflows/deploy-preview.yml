@@ -14,6 +14,7 @@
 #   5. scripts/fix-pages-asset-paths.mjs
 #   6. the BASE_PATH const + favicon href in src/app/layout.tsx
 #   7. the GitHub Pages site itself, under repo Settings -> Pages
+#   (the "Exclude server-rendered blog" step goes away with this file)
 #
 # Nothing here touches `main` — the trigger is the v2 branch only.
 # ---------------------------------------------------------------------------
@@ -50,6 +51,11 @@ jobs:
         run: npm ci
         env:
           HUSKY: 0 # git hooks are irrelevant in CI
+
+      # The blog is server-rendered from the Bunzy API on every request, which
+      # a static export can't do, so it is left out of the Pages preview.
+      - name: Exclude server-rendered blog from static export
+        run: rm -rf src/app/blog
 
       - name: Build static export
         run: npm run build

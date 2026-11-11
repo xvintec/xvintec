@@ -38,7 +38,6 @@ const Header = ({
       onClick();
     } else {
       setIsPopupOpen(true);
-      console.log("first");
     }
   };
 

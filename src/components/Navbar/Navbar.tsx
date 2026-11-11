@@ -4,6 +4,7 @@ import { FC, useEffect, useRef, useState } from "react";
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import { ServicesData } from "@/data/ServicesData";
 import { NavbarType } from "@/types/NavbarTypes";
@@ -18,7 +19,25 @@ type Props = {
   NavbarData: NavbarType;
 };
 
+// Routes (and everything under them) with a light page background and no dark
+// hero, where the white at-rest header would be invisible.
+const DARK_HEADER_ROUTES = ["/blog"];
+
 const Navbar: FC<Props> = ({ NavbarData }) => {
+  const pathname = usePathname();
+  const isDarkHeaderRoute = DARK_HEADER_ROUTES.some(
+    (route) => pathname === route || pathname?.startsWith(`${route}/`)
+  );
+
+  // Pages that can appear at any URL (the 404) opt in with a
+  // `data-dark-header` attribute instead of a route.
+  const [hasDarkHeaderMarker, setHasDarkHeaderMarker] = useState(false);
+  useEffect(() => {
+    setHasDarkHeaderMarker(!!document.querySelector("[data-dark-header]"));
+  }, [pathname]);
+
+  const forceDarkHeader = isDarkHeaderRoute || hasDarkHeaderMarker;
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -98,7 +117,8 @@ const Navbar: FC<Props> = ({ NavbarData }) => {
   };
 
   // Header is transparent over the hero at rest; fills solid white once scrolled.
-  const lightMode = !scrolled;
+  // Light-background routes skip the white variant and use the black header.
+  const lightMode = !scrolled && !forceDarkHeader;
 
   return (
     <div className="relative z-40 animate-fade">

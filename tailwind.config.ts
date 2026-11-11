@@ -146,6 +146,7 @@ const config = {
   plugins: [
     require("tailwindcss-animate"),
     require("tailwindcss-animated"),
+    require("@tailwindcss/typography"),
     customPlugin,
   ],
 } satisfies Config;

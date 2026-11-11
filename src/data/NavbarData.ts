@@ -20,6 +20,10 @@ export const NavbarData: NavbarType = {
       link: "/about-us",
     },
     {
+      title: "Blog",
+      link: "/blog",
+    },
+    {
       title: "Careers",
       link: "/careers",
     },

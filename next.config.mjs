@@ -33,6 +33,10 @@ const nextConfig = {
       ? { loader: "custom", loaderFile: "./image-loader.mjs" }
       : {}),
     remotePatterns: [
+      // Bunzy blog CMS: post thumbnails/OG images, plus R2 public buckets.
+      { protocol: "https", hostname: "cdn.bunzy.io", pathname: "/**" },
+      { protocol: "https", hostname: "app.bunzy.io", pathname: "/**" },
+      { protocol: "https", hostname: "*.r2.dev", pathname: "/**" },
       {
         protocol: "https",
         hostname: "**",
