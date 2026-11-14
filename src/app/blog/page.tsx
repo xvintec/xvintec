@@ -1,13 +1,17 @@
 import type { Metadata } from "next";
 
-import PostList from "@/components/BlogPage/PostList";
-import { getPosts, getTags } from "@/lib/blog";
+import BlogLibrary from "@/components/BlogPage/BlogLibrary";
+import {
+  DEFAULT_STATE,
+  type LibraryState,
+  SORT_KEYS,
+  type SortKey,
+} from "@/components/BlogPage/libraryState";
+import { getAllPosts } from "@/lib/blog";
 
 // Must be a literal for Next's static analysis; mirrors `revalidate` in
 // @/lib/blog (posts are no-store so CMS edits are live immediately).
 export const revalidate = 0;
-
-const PER_PAGE = 12;
 
 export const metadata: Metadata = {
   title: "Blog | Xvintec",
@@ -16,24 +20,30 @@ export const metadata: Metadata = {
   alternates: { canonical: "/blog" },
 };
 
-type Props = { searchParams: Promise<{ page?: string }> };
+type Props = {
+  searchParams: Promise<{
+    q?: string;
+    tag?: string;
+    sort?: string;
+    page?: string;
+  }>;
+};
 
 export default async function BlogIndexPage({ searchParams }: Props) {
-  const { page: pageParam } = await searchParams;
-  const page = Math.max(1, Number.parseInt(pageParam ?? "1", 10) || 1);
+  const params = await searchParams;
 
-  const [{ data, pagination }, tags] = await Promise.all([
-    getPosts(page, PER_PAGE),
-    getTags(),
-  ]);
+  // The listing filters in the browser and mirrors its state to the URL;
+  // reading it here makes a shared or reloaded link render the same view.
+  const initialState: LibraryState = {
+    q: params.q ?? DEFAULT_STATE.q,
+    tag: params.tag ?? DEFAULT_STATE.tag,
+    sort: SORT_KEYS.includes(params.sort as SortKey)
+      ? (params.sort as SortKey)
+      : DEFAULT_STATE.sort,
+    page: Math.max(1, Number.parseInt(params.page ?? "1", 10) || 1),
+  };
 
-  return (
-    <PostList
-      posts={data}
-      pagination={pagination}
-      tags={tags}
-      totalPosts={pagination.total}
-      activeTag={null}
-    />
-  );
+  const posts = await getAllPosts();
+
+  return <BlogLibrary posts={posts} initialState={initialState} />;
 }

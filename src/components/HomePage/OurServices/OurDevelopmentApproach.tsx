@@ -13,6 +13,10 @@ const OurDevelopmentApproach = ({
   content1,
   content2,
   content3,
+  // Space below the section. The Services page passes "" because the
+  // testimonials that follow are dark too, and a margin there shows as a white
+  // band between them.
+  spacingClassName = "mb-20 md:mb-28",
 }: any) => {
   const [sectionRef, isVisible] = useIntersectionAnimation();
   // The pinned column needs its own observer: it must reveal even when the
@@ -46,7 +50,7 @@ const OurDevelopmentApproach = ({
   return (
     <div
       ref={sectionRef}
-      className="mb-20 md:mb-28 bg-[url('/images/Black-mobile.png')] md:bg-[url('/images/Black-desktop.png')] md:bg-center bg-cover bg-no-repeat"
+      className={`${spacingClassName} bg-[url('/images/Black-mobile.png')] md:bg-[url('/images/Black-desktop.png')] md:bg-center bg-cover bg-no-repeat`}
     >
       <div className="fl-container py-16 md:py-24" ref={panelRef}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">

@@ -134,6 +134,22 @@ export async function getPosts(
   return (await res.json()) as PostList;
 }
 
+// The API rejects limit > 50 with a 400.
+const MAX_PAGE_SIZE = 50;
+
+// Every published post, newest first, paging through the API 50 at a time.
+// Used by the blog listing (which filters, sorts and paginates in the browser)
+// and the sitemap.
+export async function getAllPosts(): Promise<PostSummary[]> {
+  const first = await getPosts(1, MAX_PAGE_SIZE);
+  const rest = await Promise.all(
+    Array.from({ length: first.pagination.totalPages - 1 }, (_, i) =>
+      getPosts(i + 2, MAX_PAGE_SIZE)
+    )
+  );
+  return [first, ...rest].flatMap((list) => list.data);
+}
+
 export async function getPost(slug: string): Promise<Post | null> {
   const res = await request(`/posts/${encodeURIComponent(slug)}`);
   if (res.status === 404) return null;
@@ -151,11 +167,8 @@ export async function getTags(): Promise<TagCount[]> {
 /* Shared helpers                                                           */
 /* ------------------------------------------------------------------------ */
 
-// Tags contain spaces ("managed IT services"), so they are URI-encoded in
-// /blog/tag/[slug] URLs.
-export function tagHref(tag: string): string {
-  return `/blog/tag/${encodeURIComponent(tag)}`;
-}
+// Lives in ./blogPaths so client components can use it too.
+export { tagHref } from "./blogPaths";
 
 export function formatDate(iso: string, locale = "en-GB"): string {
   return new Date(iso).toLocaleDateString(locale, {

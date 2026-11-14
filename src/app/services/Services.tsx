@@ -28,6 +28,7 @@ const Services = () => {
       </div>
       <OurServices />
       <OurDevelopmentApproach
+        spacingClassName=""
         title1="Discovery Phase"
         title2="Assessment"
         title3="Prototype"

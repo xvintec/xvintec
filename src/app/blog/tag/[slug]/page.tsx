@@ -1,18 +1,22 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import PostList from "@/components/BlogPage/PostList";
-import { getPosts, getTags, tagHref } from "@/lib/blog";
+import BlogLibrary from "@/components/BlogPage/BlogLibrary";
+import {
+  DEFAULT_STATE,
+  type LibraryState,
+  SORT_KEYS,
+  type SortKey,
+} from "@/components/BlogPage/libraryState";
+import { getAllPosts, tagHref } from "@/lib/blog";
 
 // Must be a literal for Next's static analysis; mirrors `revalidate` in
 // @/lib/blog (posts are no-store so CMS edits are live immediately).
 export const revalidate = 0;
 
-const PER_PAGE = 12;
-
 type Props = {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ q?: string; sort?: string; page?: string }>;
 };
 
 // Tags contain spaces, so the segment arrives URI-encoded.
@@ -24,35 +28,48 @@ function decodeTag(slug: string): string {
   }
 }
 
+// "managed IT services" -> "Managed IT Services" (leaves "IT" alone).
+function titleCase(tag: string) {
+  return tag.replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const tag = decodeTag((await params).slug);
   return {
-    title: `${tag} | Xvintec Blog`,
-    description: `Xvintec articles tagged "${tag}".`,
+    title: `${titleCase(tag)} | Xvintec Blog`,
+    description: `Xvintec articles on ${tag}.`,
     alternates: { canonical: tagHref(tag) },
   };
 }
 
+// Tag landing page: the blog listing narrowed to one tag.
 export default async function BlogTagPage({ params, searchParams }: Props) {
   const tag = decodeTag((await params).slug);
-  const { page: pageParam } = await searchParams;
-  const page = Math.max(1, Number.parseInt(pageParam ?? "1", 10) || 1);
+  const query = await searchParams;
 
-  // The last request only reads the overall total for the "All posts" chip.
-  const [{ data, pagination }, tags, all] = await Promise.all([
-    getPosts(page, PER_PAGE, tag),
-    getTags(),
-    getPosts(1, 1),
-  ]);
-  if (pagination.total === 0) notFound();
+  const posts = (await getAllPosts()).filter((post) => post.tags.includes(tag));
+  if (posts.length === 0) notFound();
+
+  const initialState: LibraryState = {
+    q: query.q ?? DEFAULT_STATE.q,
+    tag: DEFAULT_STATE.tag,
+    sort: SORT_KEYS.includes(query.sort as SortKey)
+      ? (query.sort as SortKey)
+      : DEFAULT_STATE.sort,
+    page: Math.max(1, Number.parseInt(query.page ?? "1", 10) || 1),
+  };
 
   return (
-    <PostList
-      posts={data}
-      pagination={pagination}
-      tags={tags}
-      totalPosts={all.pagination.total}
-      activeTag={tag}
+    <BlogLibrary
+      posts={posts}
+      initialState={initialState}
+      basePath={tagHref(tag)}
+      showTagPills={false}
+      heading={{
+        eyebrow: "Xvintec Blog · Tag",
+        title: titleCase(tag),
+        intro: `${posts.length} ${posts.length === 1 ? "article" : "articles"} on ${tag}.`,
+      }}
     />
   );
 }
